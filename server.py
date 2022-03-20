@@ -2,8 +2,12 @@ from flask import Flask # have to import the Flask Class from the flash moduel
 app = Flask(__name__)
 
 @app.route('/')
+def greetings():
+   return "Greetings!"
+
+@app.route("/hello")
 def hello_world():
-   return "Hello World"
+   return "hello world"
 
 if __name__ == '__main__':
     #      host,    port, debug
