@@ -6,7 +6,12 @@ Notes:
 
 Hey everyone. In order to make this as seamless as possible, make sure to install these packages on your local machine.
 
-1. pip install Flask
+1. pip install flask
+2. pip install flask-login
+
+Some useful readings:
+
+https://flask.palletsprojects.com/en/2.0.x/tutorial/views/#:~:text=A%20view%20function%20is%20the,turns%20into%20an%20outgoing%20response.
 
 Workflow tips:
 
