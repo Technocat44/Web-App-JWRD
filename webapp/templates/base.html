@@ -11,6 +11,7 @@
   </head>
 
   <title>{% block title %} Homepage {% endblock %}</title>
+   <body>
   <div class="active">
     <ul>
       <li><a href="/">Home</a></li>
@@ -19,11 +20,11 @@
       <li><a href="/sign-up">Sign-Up</a></li>
     </ul>
   </div>
-  <body>
+ <div class="container">
     {% block content %}
     <h1>Hello</h1>
     {% endblock %}
-
+</div>
     <script
       type="text/javascript"
       src="{{ url_for('static', filename='js/function.js') }}"
