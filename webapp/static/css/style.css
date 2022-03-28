@@ -1,0 +1,39 @@
+h1 {
+  font-size: 40px;
+  background-color: rgb(207, 171, 105);
+  color: rgb(7, 1, 1);
+}
+
+body {
+  background-color: #000000;
+}
+
+
+.active {
+  background-color: rgb(28, 197, 22);
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+  color: white;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+/* Change the link color to #111 (black) on hover */
+li a:hover {
+  background-color: rgb(28, 197, 22);
+}
+

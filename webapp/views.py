@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, render_template
 
 views = Blueprint('views', __name__)
 
@@ -9,4 +9,4 @@ incoming request URL to the view that should handle it. The view returns data th
 
 @views.route('/')
 def home():
-    return "<h1>Test</h1>"
+    return render_template("home.html")

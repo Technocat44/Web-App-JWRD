@@ -1,0 +1,32 @@
+<!-- This is the base template that displays the main content of a page other views can override this -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      href="{{ url_for('static', filename='css/style.css') }}"
+      rel="stylesheet"
+    />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+
+  <title>{% block title %} Homepage {% endblock %}</title>
+  <div class="active">
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="/login">Login</a></li>
+      <li><a href="/logout">Logout</a></li>
+      <li><a href="/sign-up">Sign-Up</a></li>
+    </ul>
+  </div>
+  <body>
+    {% block content %}
+    <h1>Hello</h1>
+    {% endblock %}
+
+    <script
+      type="text/javascript"
+      src="{{ url_for('static', filename='js/function.js') }}"
+    ></script>
+  </body>
+</html>
