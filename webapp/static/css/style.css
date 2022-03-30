@@ -4,10 +4,10 @@ h1 {
 }
 
 .container {
-  color: rgb(211, 132, 248);
+  color: rgb(28, 197, 22);
 }
 body {
-  background-color: #252525;
+  background-color: #181818;
 }
 
 .active {
@@ -42,4 +42,9 @@ li a {
 /* Change the link color to #111 (black) on hover */
 li a:hover {
   background-color: rgb(28, 197, 22);
+}
+
+.form-group {
+  margin: auto;
+  padding: 1px;
 }
