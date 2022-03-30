@@ -1,6 +1,33 @@
 {% extends "base.html" %} {% block title %}Login{% endblock %} {% block content
 %}
-<h1>Login here, {{ user }}</h1>
-{% if boolean == true %}
-<h1>How's it going, {{user}}</h1>
-{% endif %} {% endblock %}
+<form method="POST">
+  <div id="parent">
+    <h1>Login here, {{ user }}</h1>
+    {% if boolean == true %}
+    <h1>How's it going, {{user}}</h1>
+    {% endif %}
+    <div class="form-group">
+      <label for="email">Email Address</label>
+      <input
+        type="email"
+        class="form-control"
+        id="email"
+        name="email"
+        placeholder="Enter email"
+      />
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input
+        type="password"
+        class="form-control"
+        id="password"
+        name="password"
+        placeholder="Enter password"
+      />
+    </div>
+
+    <button class="sign-up-button" type="submit">Submit</button>
+  </div>
+</form>
+{% endblock %}
