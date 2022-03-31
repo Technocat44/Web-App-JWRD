@@ -9,6 +9,7 @@ Hey everyone. In order to make this as seamless as possible, make sure to instal
 1. pip install flask
 2. pip install flask-login
 3. pip install flask-pymongo
+4. pip install pythondns
 
 Some useful readings:
 
@@ -17,6 +18,9 @@ https://flask.palletsprojects.com/en/2.0.x/tutorial/views/#:~:text=A%20view%20fu
 
 Flask-PyMongo docs:
 https://flask-pymongo.readthedocs.io/en/latest/
+
+Mongo-Atlas Set-Up:
+https://www.freecodecamp.org/news/get-started-with-mongodb-atlas/
 
 Workflow tips:
 

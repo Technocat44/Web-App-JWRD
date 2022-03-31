@@ -1,7 +1,8 @@
-from pymongo import MongoClient
-mongo = MongoClient("mongo")
-users_collection = mongo.db["users"]
-users_id_collection = mongo.db["users_id"]
+from webapp import mongo_client
+
+users_collection = mongo_client.db.users_collection
+
+users_id_collection = mongo_client.db.users_id_collection
 
 # when ever we need a new id, we go into our file collection
 # find one document, (that's all we will have in this collection)

@@ -1,10 +1,10 @@
 from flask import Blueprint, redirect, render_template, request, flash, url_for
-from .database import createUser, list_all
+from webapp.database import createUser
 
-auth = Blueprint('auth', __name__)
+auther = Blueprint('auth', __name__)
 
 # to allow different types of request for each route, we can add the methods parameter that takes a list with the type of request
-@auth.route('/login', methods=['GET', 'POST'])
+@auther.route('/login', methods=['GET', 'POST'])
 def login():
     
     """
@@ -31,12 +31,12 @@ def login():
     return render_template('login.html', boolean=False, user=request.form.get('firstName'))
 
 # adding a user parameter to the render_template allows us to pass in a value to be dealt with by the html template
-@auth.route('/logout')
+@auther.route('/logout')
 def logout():
     flash("Successfully Logged out!")
     return render_template('logout.html', user="Ryan")
 
-@auth.route('/sign-up', methods=['GET','POST'])
+@auther.route('/sign-up', methods=['GET','POST'])
 def sign_up():
     fName = None
     if request.method == 'POST':
@@ -68,9 +68,9 @@ def sign_up():
             flash("Passwords must be 8 characters or more.", category='error')
         else:
             # add user to database
-            createUser(email, fName, passwordOne)
-            users = list_all()
-            print(users)
+            createUser(email, fName, passwordOne) 
+           # users = list_all()
+           # print(users)
             flash("Account created", category='success')
 
     if fName != None:
