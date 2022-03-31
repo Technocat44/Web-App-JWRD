@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <!--The url_for() method allows us to load in a specific file in our app-->
     <link
       href="{{ url_for('static', filename='css/style.css') }}"
       rel="stylesheet"
@@ -11,20 +12,35 @@
   </head>
 
   <title>{% block title %} Homepage {% endblock %}</title>
-   <body>
-  <div class="active">
-    <ul>
-      <li><a href="/">Home</a></li>
-      <li><a href="/login">Login</a></li>
-      <li><a href="/logout">Logout</a></li>
-      <li><a href="/sign-up">Sign-Up</a></li>
-    </ul>
-  </div>
- <div class="container">
-    {% block content %}
-    <h1>Hello</h1>
-    {% endblock %}
-</div>
+  <body>
+    <div class="active">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/login">Login</a></li>
+        <li><a href="/logout">Logout</a></li>
+        <li><a href="/sign-up">Sign-Up</a></li>
+      </ul>
+    </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          {% if category == 'error'%}
+           <div class="flashError">
+             {{ message }}
+            </div>
+          {% else %}
+            <div class="flashSuccess">
+             {{ message }}
+            </div>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    <div class="container">
+      {% block content %}
+      <h1>Hello</h1>
+      {% endblock %}
+    </div>
     <script
       type="text/javascript"
       src="{{ url_for('static', filename='js/function.js') }}"

@@ -11,7 +11,7 @@ def create_app():
 
     # Now that we have created and defined BLUEPRINTS we need to import these Blueprints 
     #                  # the name of the Blueprint is views, auth
-    from .views import views
+    from .views import views # this is importing the views file that is in the same directory and we import the blueprint
     from .auth import auth
     # Now that we imported them we have to register them
     app.register_blueprint(views, url_prefix='/')

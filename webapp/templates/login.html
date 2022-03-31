@@ -2,9 +2,9 @@
 %}
 <form method="POST">
   <div id="parent">
-    <h1>Login here, {{ user }}</h1>
-    {% if boolean == true %}
-    <h1>How's it going, {{user}}</h1>
+    <h1>Login here {{ request.form.firstName }}</h1>
+    {% if boolean == false %}
+    <h1>Please login {{user}}</h1>
     {% endif %}
     <div class="form-group">
       <label for="email">Email Address</label>
@@ -27,7 +27,7 @@
       />
     </div>
 
-    <button class="sign-up-button" type="submit">Submit</button>
+    <button class="sign-up-button" type="submit">Login</button>
   </div>
 </form>
 {% endblock %}
