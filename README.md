@@ -10,6 +10,7 @@ Hey everyone. In order to make this as seamless as possible, make sure to instal
 2. pip install flask-login
 3. pip install flask-pymongo
 4. pip install pythondns
+5. pip install dotenv
 
 Some useful readings:
 

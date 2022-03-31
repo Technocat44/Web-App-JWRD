@@ -1,5 +1,5 @@
 from flask import Blueprint, redirect, render_template, request, flash, url_for
-from webapp.database import createUser
+from webapp.database import createUser, list_all
 
 auther = Blueprint('auth', __name__)
 
@@ -33,6 +33,8 @@ def login():
 # adding a user parameter to the render_template allows us to pass in a value to be dealt with by the html template
 @auther.route('/logout')
 def logout():
+    # I added this function call to make sure that its working properly, you can see the output in the terminal
+    list_all()
     flash("Successfully Logged out!")
     return render_template('logout.html', user="Ryan")
 
@@ -69,8 +71,7 @@ def sign_up():
         else:
             # add user to database
             createUser(email, fName, passwordOne) 
-           # users = list_all()
-           # print(users)
+
             flash("Account created", category='success')
 
     if fName != None:

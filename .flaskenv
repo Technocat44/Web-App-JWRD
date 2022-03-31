@@ -1,0 +1,3 @@
+USERNAME=devUser
+PASSWORD=jesseHartloff
+DATABASE=JWRD_DB

@@ -1,5 +1,9 @@
 from webapp import mongo_client
 
+"""
+I set these collections up on Mongo Atlas first and then connected to them through mongo_client.
+I want to keep all the database functions separate from the views so that is why I created the database.py file
+"""
 users_collection = mongo_client.db.users_collection
 
 users_id_collection = mongo_client.db.users_id_collection
