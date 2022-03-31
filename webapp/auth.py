@@ -1,10 +1,12 @@
-from flask import Blueprint, render_template, request, flash
+from flask import Blueprint, redirect, render_template, request, flash, url_for
+from .database import createUser, list_all
 
 auth = Blueprint('auth', __name__)
 
 # to allow different types of request for each route, we can add the methods parameter that takes a list with the type of request
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
+    
     """
     importing request allows us to access the data that was sent to this route.
     if we print(data) when we submit the form we will get an ImmutableDict object that stores the data!
@@ -14,11 +16,24 @@ def login():
     if request.method == 'POST':
         data = request.form
         print(data)
-    return render_template('login.html', boolean=True, user=request.form.get('firstName'))
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+        if len(email) < 4:
+            flash("Email must be longer than 4 characters.", category='error')
+        elif len(password) < 7:
+            flash("Passwords must be 8 characters or more.", category='error')
+        else:
+            flash("Successfully Logged in!")
+            return render_template('home.html', boolean=True, user=request.form.get('firstName'))
+            
+
+    return render_template('login.html', boolean=False, user=request.form.get('firstName'))
 
 # adding a user parameter to the render_template allows us to pass in a value to be dealt with by the html template
 @auth.route('/logout')
 def logout():
+    flash("Successfully Logged out!")
     return render_template('logout.html', user="Ryan")
 
 @auth.route('/sign-up', methods=['GET','POST'])
@@ -27,6 +42,7 @@ def sign_up():
     if request.method == 'POST':
         data = request.form
         print(data)
+       
         """
         Example of form data:
             ImmutableMultiDict([
@@ -52,6 +68,9 @@ def sign_up():
             flash("Passwords must be 8 characters or more.", category='error')
         else:
             # add user to database
+            createUser(email, fName, passwordOne)
+            users = list_all()
+            print(users)
             flash("Account created", category='success')
 
     if fName != None:

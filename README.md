@@ -8,12 +8,19 @@ Hey everyone. In order to make this as seamless as possible, make sure to instal
 
 1. pip install flask
 2. pip install flask-login
+3. pip install flask-pymongo
 
 Some useful readings:
 
+Views and Blueprints:
 https://flask.palletsprojects.com/en/2.0.x/tutorial/views/#:~:text=A%20view%20function%20is%20the,turns%20into%20an%20outgoing%20response.
 
+Flask-PyMongo docs:
+https://flask-pymongo.readthedocs.io/en/latest/
+
 Workflow tips:
+
+IMPORTANT: To run everything locally there will be some commands that need to be commented out.
 
 1. Start by pulling the most recent repo from Github.
 2. Create a branch to work on.
