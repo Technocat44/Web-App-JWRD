@@ -1,15 +1,17 @@
 {% extends "base.html" %} {% block title %}Upload File{% endblock %} ' {% block
 content %}
-<form method="POST">
-    <div id="parent">
-        <h1>Upload </h1>
-            <label for="image-form-comment">Comment: </label>
-            <textarea id="image-form-comment" name="comment" cols="40" rows="6"></textarea>
-            <br/>
-            <label for="form-file">Image: </label>
-            <input id="form-file" type="file" name="upload">
-            <input type="submit" value="Post">
-    </div>
-    <button class="sign-up-button" type="submit">Submit</button>
+    <form  id="image-form" method="post" enctype="multipart/form-data">
+
+        <label for="form-file">Image: </label>
+        <input id="form-file" type="file" name="upload">
+        <input type="submit" value="Post">
 </form>
+
+{%for i in imList %}
+    <img src='static/images/{{ i }}'>
+{%  endfor %}
+
+
+
+
 {% endblock %}
