@@ -1,16 +1,15 @@
-{% extends "base.html" %} {% block title %}Sign-up{% endblock %}
+{% extends "base.html" %} {% block title %}Upload File{% endblock %} ' {% block
+content %}
 <form method="POST">
     <div id="parent">
-        <h1>Sign up here {{request.form.firstName}}</h1>
-        <div class="form-group">
-            <label for="email">Email Address</label>
-            <input
-                    type="email"
-                    class="form-control"
-                    id="email"
-                    name="email"
-                    placeholder="Enter email"
-            />
-        </div>
+        <h1>Upload </h1>
+            <label for="image-form-comment">Comment: </label>
+            <textarea id="image-form-comment" name="comment" cols="40" rows="6"></textarea>
+            <br/>
+            <label for="form-file">Image: </label>
+            <input id="form-file" type="file" name="upload">
+            <input type="submit" value="Post">
     </div>
+    <button class="sign-up-button" type="submit">Submit</button>
 </form>
+{% endblock %}
