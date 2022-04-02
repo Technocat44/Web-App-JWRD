@@ -1,6 +1,6 @@
 # this makes the webapp folder a package and we can import it anywhere else in our code easily 
 from flask import Flask
-from webapp import create_app, views, auth, upload
+from webapp import create_app, views, auth, upload, images
 
 app = create_app()
     # Now that we have created and defined BLUEPRINTS we need to import these Blueprints 

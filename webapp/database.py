@@ -4,6 +4,7 @@ import certifi
 
 mongo_client = PyMongo(tlsCAFile=certifi.where())
 
+
 """
 I set these collections up on Mongo Atlas first and then connected to them through mongo_client.
 I want to keep all the database functions separate from the views so that is why I created the database.py file
@@ -44,3 +45,28 @@ def find_one():
   print("this is in the db file, in find_one functionthe response is: ", oneUser)
   # if the id does not exist, oneUser will equal null / None
   return oneUser
+  
+def getImageFileID():
+    imID = mongo_client.db["imageNum"]
+    imID_ob = imID.find_one({})
+    if imID_ob:
+        next_id = int(imID_ob['last_id']) + 1
+        imID.update_one({},{'$set' : {'last_id' : next_id}})
+        return next_id
+    else:
+        imID.insert_one({'last_id': 1})
+        return 1
+
+def insertImages(imageID):
+    photoPaths = mongo_client.db["paths"]
+    photoData = {'path': 'image-' + str(imageID) + '.jpg'}
+    photoPaths.insert_one(photoData)
+    #mongo_client.db.drop_collection("paths")
+    return True
+
+def getPhotos():
+    photoPaths = mongo_client.db["paths"]
+    arr = []
+    for paths in photoPaths.find():
+        arr.append(paths['path'])
+    return arr
