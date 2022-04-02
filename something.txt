@@ -1,3 +1,6 @@
 test fiel
 test field
 test!
+
+Either a db to hold online users or an online key in a user dict
+or do nothing until you are logged in (makes most sense)
