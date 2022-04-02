@@ -1,0 +1,16 @@
+{% extends "base.html" %} {% block title %}Sign-up{% endblock %}
+<form method="POST">
+    <div id="parent">
+        <h1>Sign up here {{request.form.firstName}}</h1>
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <input
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    name="email"
+                    placeholder="Enter email"
+            />
+        </div>
+    </div>
+</form>
