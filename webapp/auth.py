@@ -68,7 +68,7 @@ def sign_up():
         userName = request.form.get('userName')
         passwordOne = request.form.get('password1')
         passwordTwo = request.form.get('password2')
-
+        
         existing_user = find_one()
         if existing_user is None:
             hash = Bcrypt.generate_password_hash(passwordOne).decode('UTF-8')
