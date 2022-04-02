@@ -14,6 +14,9 @@ Hey everyone. In order to make this as seamless as possible, make sure to instal
 
 Some useful readings:
 
+Application Factories:
+https://flask.palletsprojects.com/en/2.1.x/patterns/appfactories/
+
 Views and Blueprints:
 https://flask.palletsprojects.com/en/2.0.x/tutorial/views/#:~:text=A%20view%20function%20is%20the,turns%20into%20an%20outgoing%20response.
 
@@ -22,6 +25,7 @@ https://flask-pymongo.readthedocs.io/en/latest/
 
 Mongo-Atlas Set-Up:
 https://www.freecodecamp.org/news/get-started-with-mongodb-atlas/
+
 
 Workflow tips:
 

@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, render_template, request, flash, url_for
+from flask import Blueprint, render_template, request, flash
 from webapp.database import createUser, list_all
 
 auther = Blueprint('auth', __name__)
