@@ -36,7 +36,7 @@ IMPORTANT: To run everything locally there will be some commands that need to be
    - git branch "branch name"
    - git checkout "branch name" || - git checkout -b "branch name" does the same thing
 3. Work on the branch and write some code.
-4. git add, commit
+4. git add, commit -m "<message>" 
 5. Switch back to the main branch
    - git checkout main || git switch main
 6. Merge the changes to main

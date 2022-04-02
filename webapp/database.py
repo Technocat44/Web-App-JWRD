@@ -1,6 +1,7 @@
 from flask_pymongo import PyMongo
+import certifi
 
-mongo_client = PyMongo()
+mongo_client = PyMongo(tlsCAFile=certifi.where())
 
 """
 I set these collections up on Mongo Atlas first and then connected to them through mongo_client.
