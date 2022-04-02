@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv(".flaskenv")
-USERNAME = os.getenv("USERNAME")
+USERNAME = 'devUser'
 PASSWORD = os.getenv("PASSWORD")
 DATABASE = os.getenv("DATABASE")
 
