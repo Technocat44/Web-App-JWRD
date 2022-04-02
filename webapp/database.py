@@ -1,3 +1,4 @@
+from flask import request
 from flask_pymongo import PyMongo
 import certifi
 
@@ -37,3 +38,9 @@ def list_all():
     all_users = users_collection.find({}, {"_id": 0})
     print(list(all_users))
     return list(all_users)
+
+def find_one():
+  oneUser = mongo_client.db.users_collection.find_one({"userName":request.form['userName']}, {"_id":0})
+  print("this is in the db file, in find_one functionthe response is: ", oneUser)
+  # if the id does not exist, oneUser will equal null / None
+  return oneUser

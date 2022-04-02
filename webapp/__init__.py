@@ -24,6 +24,9 @@ def create_app():
     app.config["MONGO_URI"] = f"mongodb+srv://{USERNAME}:{PASSWORD}@clusterjwrd.49opx.mongodb.net/{DATABASE}?retryWrites=true&w=majority"
     from .database import mongo_client
     mongo_client.init_app(app)
+
+    # from .models import login_manager
+    # login_manager.init_app(app)
     
     return app
 
