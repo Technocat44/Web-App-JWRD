@@ -43,3 +43,5 @@ IMPORTANT: To run everything locally there will be some commands that need to be
    - git merge "branch name"
 7. Then push the changes
    - git push
+8. To delete a branch
+   - git branch -d <branchname>
