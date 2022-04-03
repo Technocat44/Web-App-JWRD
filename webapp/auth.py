@@ -10,7 +10,7 @@ auther = Blueprint('auth', __name__)
 @auther.route('/login', methods=['GET', 'POST'])
 def login():
     if 'username' in session:
-        render_template('login.html', boolean=True, user=session['username'])
+        render_template('home.html', boolean=True, user=session['username'])
     """
     A sessiom object works pretty much like an ordinary dict, with the difference that it keeps track of modifications.]
     A session allows you to store information specific to a user from one request to the next.
@@ -34,10 +34,10 @@ def login():
             flash("Passwords must be 8 characters or more.", category='error')
         else:
             flash("Successfully Logged in!")
-            return render_template('home.html', boolean=True, user=request.form.get('firstName'))
+            return render_template('home.html', boolean=True, user=request.form.get('userName'))
             
 
-    return render_template('login.html', boolean=False, user=request.form.get('firstName'))
+    return render_template('login.html', boolean=False, user=request.form.get('userName'))
 
 # adding a user parameter to the render_template allows us to pass in a value to be dealt with by the html template
 @auther.route('/logout')
@@ -51,8 +51,6 @@ def logout():
 def sign_up():
     userName = None
     # grab the users_collection from the db
-    
-
     if request.method == 'POST':
         data = request.form
         print(data)
@@ -70,9 +68,6 @@ def sign_up():
         passwordOne = request.form.get('password1')
         passwordTwo = request.form.get('password2')
         
-  
-            
-
         # Super cool feature of Flask that allows us to respond to a user on malformed input 
         # https://www.tutorialspoint.com/flask/flask_message_flashing.htm
         if len(email) < 4:
@@ -88,14 +83,16 @@ def sign_up():
             existing_user = find_one()
             if existing_user is None:
                 hash = bcrypt.generate_password_hash(passwordOne).decode('UTF-8')
+                print(hash)
                 createUser(email, userName, hash)
+    
                 session["userName"] = userName
                 flash("Account created", category='success')
-                return render_template('/home.html', user=userName)
+                return redirect(url_for('views.home'))
              
 
             
 
    
-    return render_template('sign-up.html', user=userName)
+    return render_template('sign-up.html')
   
