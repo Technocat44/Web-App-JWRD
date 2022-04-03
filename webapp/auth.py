@@ -1,7 +1,8 @@
-from flask import Blueprint, render_template, request, flash, session
+from flask import Blueprint, redirect, render_template, request, flash, session, url_for
 from webapp.database import createUser, list_all, find_one
-from flask_bcrypt import Bcrypt 
+from flask_bcrypt import Bcrypt
 
+bcrypt = Bcrypt()
 
 auther = Blueprint('auth', __name__)
 
@@ -69,9 +70,7 @@ def sign_up():
         passwordOne = request.form.get('password1')
         passwordTwo = request.form.get('password2')
         
-        existing_user = find_one()
-        if existing_user is None:
-            hash = Bcrypt.generate_password_hash(passwordOne).decode('UTF-8')
+  
             
 
         # Super cool feature of Flask that allows us to respond to a user on malformed input 
@@ -86,11 +85,17 @@ def sign_up():
             flash("Passwords must be 8 characters or more.", category='error')
         else:
             # add user to database
-            createUser(email, userName, passwordOne) 
+            existing_user = find_one()
+            if existing_user is None:
+                hash = bcrypt.generate_password_hash(passwordOne).decode('UTF-8')
+                createUser(email, userName, hash)
+                session["userName"] = userName
+                flash("Account created", category='success')
+                return render_template('/home.html', user=userName)
+             
 
-            flash("Account created", category='success')
+            
 
-    if userName != None:
-        return render_template('sign-up.html', user=userName)
-    else:
-        return render_template('sign-up.html')
+   
+    return render_template('sign-up.html', user=userName)
+  
