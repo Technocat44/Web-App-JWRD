@@ -4,6 +4,14 @@ h1 {
   color: rgb(255, 255, 255);
 }
 
+h2 {
+  font-size: 50px;
+}
+
+.uploaded-images {
+  width: 200px;
+}
+
 .container {
   color: rgb(255, 255, 255);
 }
