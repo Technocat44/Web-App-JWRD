@@ -2,13 +2,17 @@
 content %}
     <form style="text-align: center" id="image-form" method="post" enctype="multipart/form-data" >
 
+<<<<<<< HEAD
         <label for="form-file"> Image: </label>
+=======
+     <h2>   <label for="form-file">Image: </label>  </h2>
+>>>>>>> 655eadd9113b779da7567bb2ad2498cf341571ba
         <input id="form-file" type="file" name="upload">
         <input type="submit" value="Post">
 </form>
 
 {%for i in imList %}
-    <img src='static/images/{{ i }}'>
+    <img src='static/images/{{ i }}' class = "uploaded-images">
 {%  endfor %}
 
 

@@ -27,9 +27,9 @@ def get_next_id():
     users_id_collection.insert_one({"last_id": 1})
     return 1
 
-def createUser(email, fName, password):
+def createUser(email, userName, password):
     users_collection = mongo_client.db.users_collection
-    userDict = {"email":email, "fName":fName, "password":password}
+    userDict = {"email":email, "userName":userName, "password":password}
     userDict["id"] = get_next_id()
     users_collection.insert_one(userDict)
     userDict.pop("_id")
