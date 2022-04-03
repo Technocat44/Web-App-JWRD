@@ -1,3 +1,11 @@
 pymongo
 Flask
 pythondns
+flask
+flask-login
+flask-pymongo
+pythondns
+python-dotenv
+certifi
+flask-bcrypt
+pymongo[srv]
