@@ -27,6 +27,8 @@ https://flask-pymongo.readthedocs.io/en/latest/
 Mongo-Atlas Set-Up:
 https://www.freecodecamp.org/news/get-started-with-mongodb-atlas/
 
+Sessions in Flask:
+https://testdriven.io/blog/flask-sessions/
 
 Workflow tips:
 

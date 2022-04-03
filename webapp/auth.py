@@ -9,11 +9,18 @@ auther = Blueprint('auth', __name__)
 # to allow different types of request for each route, we can add the methods parameter that takes a list with the type of request
 @auther.route('/login', methods=['GET', 'POST'])
 def login():
+    """
+    A session is used to store information related to a user, across different requests, as they interact with a web app.
+    
+    """
     if 'username' in session:
         render_template('home.html', boolean=True, user=session['username'])
     """
     A sessiom object works pretty much like an ordinary dict, with the difference that it keeps track of modifications.]
     A session allows you to store information specific to a user from one request to the next.
+    In Flask, you can store information specific to a user for the duration of a session. Saving data for use throughout 
+    a session allows the web app to keep data persistent over multiple requests 
+    -- i.e., as a user accesses different pages within a web app.
     """
     
     """
@@ -82,7 +89,15 @@ def sign_up():
             # add user to database
             existing_user = find_one()
             if existing_user is None:
+                """
+                When the user gives you their password (in the sign-up phase), hash it and then save the hash to the database. 
+                When the user logs in, create the hash from the entered password and then compare it with the hash 
+                stored in the database. If they match, log in the user. Otherwise, display an error message.
+
+                function : check_password_hash(password_hash, password)
+                """
                 hash = bcrypt.generate_password_hash(passwordOne).decode('UTF-8')
+                
                 print(hash)
                 createUser(email, userName, hash)
     
@@ -96,3 +111,14 @@ def sign_up():
    
     return render_template('sign-up.html')
   
+"""
+To authenticate users, Flask-Login requires you implement a handful special methods in the User class. 
+The following table lists the required methods:
+
+Method	            Description
+is_authenticated()	returns True if user is authenticated (i.e logged in). Otherwise False.
+is_active()	        returns True if account is not suspended. Otherwise False.
+is_anonymous()	    returns True for anonymous users (i.e users who are not logged in). Otherwise False.
+get_id()	        returns a unique identifier for the User object.
+
+"""

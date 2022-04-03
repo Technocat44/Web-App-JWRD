@@ -9,4 +9,7 @@ incoming request URL to the view that should handle it. The view returns data th
 
 @viewer.route('/')
 def home():
-    return render_template("home.html", user=session['userName'])
+    if 'userName' in session:
+        return render_template("home.html", user=session['userName'])
+
+    return render_template("home.html", user=None)
