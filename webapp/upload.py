@@ -17,8 +17,9 @@ def home():
         if len(request.files.get('upload').filename):
         #print(request.form)
         #print(request.files)
+            print(request.get_data())
             bite = (request.get_data().split(b'image/jpeg'))
-            bite = bite[1].split(b'----')
+            bite = bite[1].split(b'-------WebKit')
             bite = bite[0][4:-2]
             #print(bite)
             id = getImageFileID()
