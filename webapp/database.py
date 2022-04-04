@@ -70,3 +70,26 @@ def getPhotos():
     for paths in photoPaths.find():
         arr.append(paths['path'])
     return arr
+
+def add_message(user1, user2, message):
+      # find if a collection for these users exist
+  temp = mongo_client.db["messages_collections"].find({"users": {"$all": [user1, user2]}})
+  found = []
+  message_collections = mongo_client.db["messages_collections"]
+  for x in temp:
+    found.append(x)
+  print(found)
+  if len(found) == 0:
+    message_collections.insert_one({"users": [user1, user2], "messages":[{"user": user1, "message": message}]})
+  else:
+    message_collections.find_one_and_update({"users": {"$all": [user1, user2]}}, )
+
+def list_messages(user1, user2):
+  messages = mongo_client.db['messages_collections'].find({"$or": [{'users': [user1, user2]},{'users': [user2,user1]}]})
+  found = []
+  for x in messages:
+    found.append(x)
+  if len(found) == 0:
+    return []
+  else:
+    return x[0]
