@@ -10,12 +10,12 @@ def home():
         # this is sending a message
         #d.add_message(,request.form.get("receiver"), request.form.get("message"))
         add_message("user1", "user2", "hellooo")
-        add_message("user2", "user1", "hello")
-        add_message("user1", "user2", "hOW UR DAY")
-        add_message("user2", "user1", "GooOd")
-        return render_template("messages.html", length = len(d.list_messages("user1","user2")), messages = d.list_messages("user1","user2"))
-
+        add_message("user2", "user1", "hiya")
+        add_message("user3", "user1", "hello")
+        add_message("user1", "user3", "yurr")
     return render_template("messages.html", length = 0, messages = [])
+
+    
 
 def escapeHTML(message):
     m = message.replace("&", "&amp")

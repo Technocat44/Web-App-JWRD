@@ -38,31 +38,25 @@ def list_all():
     print(list(all_users))
     return list(all_users)
 
-def find_chat_collection(user1, user2):
-  col1 = user1+user2
-  col2 = user2+user1
-  d = mongo_client.db["message_collection"]
-  if col1 in d.list_collection_names():
-    return col1
-  elif col2 in d.list_collection_names():
-    return col2
-  else:
-    return ""
-
 def add_message(user1, user2, message):
-  # user 1 is the sending user, user2 is receiving
-  collection_name = find_chat_collection(user1, user2)
-  if collection_name == "":
-    name = user1+user2
-    message_collection = mongo_client.db["message_collection"].name
-    newDict = {"user": user1, "message": message}
-    message_collection.insert_one(newDict)
+  # find if a collection for these users exist
+  temp = mongo_client.db["messages_collections"].find({"users": {"$all": [user1, user2]}})
+  found = []
+  message_collections = mongo_client.db["messages_collections"]
+  for x in temp:
+    found.append(x)
+  print(found)
+  if len(found) == 0:
+    message_collections.insert_one({"users": [user1, user2], "messages":[{"user": user1, "message": message}]})
   else:
-    message_collection = mongo_client.db["message_collection"].collection_name
-    
+    message_collections.find_one_and_update({"users": {"$all": [user1, user2]}}, )
 
 def list_messages(user1, user2):
-  collection_name = find_chat_collection(user1, user2)
-  message_collection = mongo_client.db["message_collection"].collection_name
-  messages = message_collection.find({})
-  return list(messages)
+  messages = mongo_client.db['messages_collections'].find({"$or": [{'users': [user1, user2]},{'users': [user2,user1]}]})
+  found = []
+  for x in messages:
+    found.append(x)
+  if len(found) == 0:
+    return []
+  else:
+    return x[0]
