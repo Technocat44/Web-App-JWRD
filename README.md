@@ -10,7 +10,8 @@ Hey everyone. In order to make this as seamless as possible, make sure to instal
 2. pip install flask-login
 3. pip install flask-pymongo
 4. pip install pythondns
-5. pip install dotenv
+5. pip install python-dotenv
+6. pip install flask-bcrypt
 
 Some useful readings:
 
@@ -26,6 +27,8 @@ https://flask-pymongo.readthedocs.io/en/latest/
 Mongo-Atlas Set-Up:
 https://www.freecodecamp.org/news/get-started-with-mongodb-atlas/
 
+Sessions in Flask:
+https://testdriven.io/blog/flask-sessions/
 
 Workflow tips:
 
@@ -44,4 +47,4 @@ IMPORTANT: To run everything locally there will be some commands that need to be
 7. Then push the changes
    - git push
 8. To delete a branch
-   - git branch -d <branchname>
+   - git branch -d "<branchname>"
