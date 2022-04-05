@@ -30,8 +30,12 @@ content %}
     </div>
 </form>
 
-{%for i in msgs %}
+{% if msgs != None %}
+  {%for i in msgs %}
     <p>{{i['user']}}: {{i['message']}}</p>
-{%endfor%}
+  {%endfor%}
+{% endif %}
+
+
 
 {% endblock %}

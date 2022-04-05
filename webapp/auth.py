@@ -41,7 +41,8 @@ def login():
             flash("Passwords must be 8 characters or more.", category='error')
         else:
             flash("Successfully Logged in!")
-            return render_template('home.html', boolean=True, user=request.form.get('userName'))
+            session["username"] = find_one(email)["fName"]
+            return render_template('home.html', boolean=True, user=session["username"])
             
 
     return render_template('login.html', boolean=False, user=request.form.get('userName'))
@@ -93,7 +94,6 @@ def sign_up():
                 When the user gives you their password (in the sign-up phase), hash it and then save the hash to the database. 
                 When the user logs in, create the hash from the entered password and then compare it with the hash 
                 stored in the database. If they match, log in the user. Otherwise, display an error message.
-
                 function : check_password_hash(password_hash, password)
                 """
                 hash = bcrypt.generate_password_hash(passwordOne).decode('UTF-8')
@@ -114,11 +114,9 @@ def sign_up():
 """
 To authenticate users, Flask-Login requires you implement a handful special methods in the User class. 
 The following table lists the required methods:
-
 Method	            Description
 is_authenticated()	returns True if user is authenticated (i.e logged in). Otherwise False.
 is_active()	        returns True if account is not suspended. Otherwise False.
 is_anonymous()	    returns True for anonymous users (i.e users who are not logged in). Otherwise False.
 get_id()	        returns a unique identifier for the User object.
-
 """

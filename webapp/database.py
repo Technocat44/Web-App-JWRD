@@ -28,51 +28,51 @@ def get_next_id():
     return 1
 
 def createUser(email, userName, password):
-    users_collection = mongo_client.db.users_collection
-    userDict = {"email":email, "userName":userName, "password":password}
-    userDict["id"] = get_next_id()
-    users_collection.insert_one(userDict)
-    userDict.pop("_id")
+  users_collection = mongo_client.db.users_collection
+  userDict = {"email":email, "userName":userName, "password":password}
+  userDict["id"] = get_next_id()
+  users_collection.insert_one(userDict)
+  userDict.pop("_id")
 
 def list_all():
-    users_collection = mongo_client.db.users_collection
-    all_users = users_collection.find({}, {"_id": 0})
-    print(list(all_users))
-    return list(all_users)
+  users_collection = mongo_client.db.users_collection
+  all_users = users_collection.find({}, {"_id": 0})
+  print(list(all_users))
+  return list(all_users)
 
-def find_one():
-  oneUser = mongo_client.db.users_collection.find_one({"userName":request.form['userName']}, {"_id":0})
+def find_one(email):
+  oneUser = mongo_client.db["users_collection"].find_one({"email": email})
   print("this is in the db file, in find_one functionthe response is: ", oneUser)
   # if the id does not exist, oneUser will equal null / None
   return oneUser
   
 def getImageFileID():
-    imID = mongo_client.db["imageNum"]
-    imID_ob = imID.find_one({})
-    if imID_ob:
-        next_id = int(imID_ob['last_id']) + 1
-        imID.update_one({},{'$set' : {'last_id' : next_id}})
-        return next_id
-    else:
-        imID.insert_one({'last_id': 1})
-        return 1
+  imID = mongo_client.db["imageNum"]
+  imID_ob = imID.find_one({})
+  if imID_ob:
+    next_id = int(imID_ob['last_id']) + 1
+    imID.update_one({},{'$set' : {'last_id' : next_id}})
+    return next_id
+  else:
+    imID.insert_one({'last_id': 1})
+    return 1
 
 def insertImages(imageID):
-    photoPaths = mongo_client.db["paths"]
-    photoData = {'path': 'image-' + str(imageID) + '.jpg'}
-    photoPaths.insert_one(photoData)
-    #mongo_client.db.drop_collection("paths")
-    return True
+  photoPaths = mongo_client.db["paths"]
+  photoData = {'path': 'image-' + str(imageID) + '.jpg'}
+  photoPaths.insert_one(photoData)
+  #mongo_client.db.drop_collection("paths")
+  return True
 
 def getPhotos():
-    photoPaths = mongo_client.db["paths"]
-    arr = []
-    for paths in photoPaths.find():
-        arr.append(paths['path'])
-    return arr
+  photoPaths = mongo_client.db["paths"]
+  arr = []
+  for paths in photoPaths.find():
+      arr.append(paths['path'])
+  return arr
 
 def add_message(user1, user2, message):
-      # find if a collection for these users exist
+  # find if a collection for these users exist
   temp = mongo_client.db["messages_collections"].find({"users": {"$all": [user1, user2]}})
   found = []
   message_collections = mongo_client.db["messages_collections"]
@@ -89,6 +89,8 @@ def add_message(user1, user2, message):
 def list_messages(user1, user2):
   messages = mongo_client.db['messages_collections'].find_one({"users": {"$all": [user1, user2]}})
   found = []
+  if messages == None:
+    return None
   for x in messages["messages"]:
     found.append(x)
   print(found)
