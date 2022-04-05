@@ -82,14 +82,17 @@ def add_message(user1, user2, message):
   if len(found) == 0:
     message_collections.insert_one({"users": [user1, user2], "messages":[{"user": user1, "message": message}]})
   else:
-    message_collections.find_one_and_update({"users": {"$all": [user1, user2]}}, )
+    query = {"users": {"$all": [user1, user2]}}
+    appender = {"$push":{"messages": {"user": user1, "message": message}}}
+    message_collections.update_one(query, appender)
 
 def list_messages(user1, user2):
-  messages = mongo_client.db['messages_collections'].find({"$or": [{'users': [user1, user2]},{'users': [user2,user1]}]})
+  messages = mongo_client.db['messages_collections'].find_one({"users": {"$all": [user1, user2]}})
   found = []
-  for x in messages:
+  for x in messages["messages"]:
     found.append(x)
+  print(found)
   if len(found) == 0:
     return []
   else:
-    return x[0]
+    return found
