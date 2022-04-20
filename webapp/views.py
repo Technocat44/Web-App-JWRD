@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, session
 
 viewer = Blueprint('views', __name__)
 
@@ -9,4 +9,7 @@ incoming request URL to the view that should handle it. The view returns data th
 
 @viewer.route('/')
 def home():
-    return render_template("home.html", user="James")
+    if 'userName' in session:
+        return render_template("home.html", user=session['userName'])
+
+    return render_template("home.html", user=None)

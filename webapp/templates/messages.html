@@ -1,0 +1,41 @@
+{% extends "base.html" %} {% block title %}Sign-up{% endblock %}' {% block
+content %}
+
+
+
+<form method="POST">
+    <div id="parent">
+      <h1>Talk to someone else online right now!</h1>
+      <div class="form-group">
+        <label for="receiving-user">Search for User: </label>
+        <input
+          type="text"
+          class="form-control"
+          id="receiver"
+          name="receiver"
+          placeholder="Enter username"
+        />
+      </div>
+      <div class="form-group">
+        <label for="message">Message: </label>
+        <input
+          type="text"
+          class="form-control"
+          id="message"
+          name="message"
+          placeholder="Enter message here!"
+        />
+      </div>
+      <button class="sign-up-button" type="submit">Send!</button>
+    </div>
+</form>
+
+{% if msgs != None %}
+  {%for i in msgs %}
+    <p>{{i['user']}}: {{i['message']}}</p>
+  {%endfor%}
+{% endif %}
+
+
+
+{% endblock %}

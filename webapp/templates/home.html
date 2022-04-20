@@ -1,6 +1,11 @@
 {% extends "base.html" %} {% block title %}Changed{% endblock %} {% block
 content %}
+
+{% if user == None %}
+<h1>Please <a href="{{ url_for('auth.sign_up') }}">sign-up</a> or <a href="{{ url_for('auth.login') }}">login.</a></h1>
+{% else %}
 <h1>Hello there, {{user}}</h1>
+{% endif %}
 <p>W</p>
 <p>W</p>
 <p>W</p>

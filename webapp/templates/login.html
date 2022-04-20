@@ -3,7 +3,7 @@
 <form method="POST">
   <div id="parent">
     {% if boolean == true %}
-    <h1>Login here {{ request.form.firstName }}</h1>
+    <h1>Welcome {{ user }}</h1>
     {% else %}
     <h1>Please login</h1>
     {% endif %}
