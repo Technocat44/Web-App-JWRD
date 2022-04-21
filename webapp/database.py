@@ -1,3 +1,4 @@
+from xmlrpc.client import Boolean
 from flask import request
 from flask_pymongo import PyMongo
 import certifi
@@ -11,12 +12,18 @@ I want to keep all the database functions separate from the views so that is why
 
 The collections have to be inside the functions, because of the app factory structure, the db won't be 
 initialized until inside of the routes. So in this case, we only call these functions when we enter routes
+
+NOTES:
+How to use find_one instead of find
+https://stackoverflow.com/questions/28968660/how-to-convert-a-pymongo-cursor-cursor-into-a-dict
 """
+
+
 
 # when ever we need a new id, we go into our file collection
 # find one document, (that's all we will have in this collection)
 def get_next_id():
-  users_id_collection = mongo_client.db.users_id_collection
+  users_id_collection = mongo_client.db["users_id_collection"]
   id_object = users_id_collection.find_one({}) # retrieve the doc
   if id_object: # if there is one in there, grab the last id, convert to int, increment by 1 
     next_id = int(id_object["last_id"]) + 1 
@@ -27,18 +34,36 @@ def get_next_id():
     users_id_collection.insert_one({"last_id": 1})
     return 1
 
-def createUser(email, userName, password):
-  users_collection = mongo_client.db.users_collection
-  userDict = {"email":email, "userName":userName, "password":password}
+
+"""
+   user_collection example =
+  {"username": "jamesaqu", "email": "jamesaqu@buffalo.edu",  "password": "$2js7fng84n7ab7fb949",
+   "id": Number, "auth_token": will be blank at sign up }
+"""
+def create_user_in_db(email, username, hashedpw):
+  users_collection = mongo_client.db["users_collection"]
+  userDict = {"email":email, "username":username, "password":hashedpw}
   userDict["id"] = get_next_id()
   users_collection.insert_one(userDict)
   userDict.pop("_id")
 
 def list_all():
-  users_collection = mongo_client.db.users_collection
+  users_collection = mongo_client.db["users_collection"]
   all_users = users_collection.find({}, {"_id": 0})
   print(list(all_users))
   return list(all_users)
+
+# this is not a security check, this only verifies if the user exist, and since usernames are unique only one will be 
+# in the database. This function is only designed to verify if the username exists that is it.
+def check_if_user_exist_on_signup(username) -> bool:
+  users_collection = mongo_client.db["users_collection"]
+  users = users_collection.find_one({"username":username}, {"username":1, "_id":0}) # this retrieves the user if they exist
+  print("this is the user name we found in the database collection : ", users)
+  if users: # if the query returned a username matching the sign up return True the username exist
+    return True 
+  else: # if the query does not return a username, return False
+    return False
+
 
 def find_one(email):
   oneUser = mongo_client.db["users_collection"].find_one({"email": email})

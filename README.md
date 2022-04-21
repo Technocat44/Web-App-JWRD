@@ -30,6 +30,9 @@ https://www.freecodecamp.org/news/get-started-with-mongodb-atlas/
 Sessions in Flask:
 https://testdriven.io/blog/flask-sessions/
 
+Database Querying in MongoDB
+https://www.mongodb.com/docs/manual/tutorial/query-documents/
+https://www.mongodb.com/docs/manual/reference/operator/query/#std-label-query-selectors
 Workflow tips:
 
 IMPORTANT: To run everything locally there will be some commands that need to be commented out.
