@@ -1,0 +1,12 @@
+I am attempting to create a session class to track specific data when a user logs in.
+
+So far in the [models.py] file I have started working on the class Session()
+I added some getters and setters to check if the user is authenticated or logged in, etc
+
+I have a state dictionary for each session that will store all pertinent data to a session
+
+
+Next-time:
+    When a user signs up I will initialize the Session my creating a new session object.
+
+    --need to figure out how to pass the session around my server after I create a session object

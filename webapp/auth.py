@@ -4,6 +4,7 @@ from webapp.database import add_auth_token_to_users_collection, check_if_user_ex
 import secrets
 import bcrypt
 import hashlib
+from webapp.models import Session
 
 # bcrypt = Bcrypt()
 
@@ -13,6 +14,19 @@ auther = Blueprint('auth', __name__)
 #@auther.before_request()
 @auther.route('/login', methods=['GET', 'POST'])
 def login():
+    user_session = Session("newUser")
+    user_session.auth_cookie = "jsjsjkf"
+    user_session.login = True
+    user_session.print_session_state()
+    # session.
+    # auth_token_cookie = request.cookies.get("auth_token", -1)
+    # if auth_token_cookie == -1:
+    #     return render_template("home.html", user=None)
+    # hash_of_auth_token_cookie = hashlib.sha256(auth_token_cookie.encode()).hexdigest()
+    # hashedAuthFromDB = retrieve_hashed_auth_token_from_db(hash_of_auth_token_cookie)
+    # if hashedAuthFromDB:
+    #     return render_template("home.html", user=hashedAuthFromDB["username"])
+    # return render_template("home.html", user=None)
     """
     A session is used to store information related to a user, across different requests, as they interact with a web app.
     
