@@ -2,6 +2,7 @@ from xmlrpc.client import Boolean
 from flask import request
 from flask_pymongo import PyMongo
 import certifi
+import hashlib
 
 from webapp import auth
 
@@ -86,6 +87,23 @@ def retrieve_hashed_auth_token_from_db(hash_auth_cookie):
     return authTokenFromDB
   else:
     return False
+
+def verify_auth_token(auth_token_cookie):
+  if auth_token_cookie == -1:
+    return False
+  hash_of_auth_token_cookie = hashlib.sha256(auth_token_cookie.encode()).hexdigest()
+  hashedAuthFromDB = retrieve_hashed_auth_token_from_db(hash_of_auth_token_cookie)
+  if hashedAuthFromDB:
+    return True
+  return False
+# def verify_auth_token(auth_token_cookie):
+#     if auth_token_cookie == -1:
+#         return render_template("home.html", user=None)
+#     hash_of_auth_token_cookie = hashlib.sha256(auth_token_cookie.encode()).hexdigest()
+#     hashedAuthFromDB = retrieve_hashed_auth_token_from_db(hash_of_auth_token_cookie)
+#     if hashedAuthFromDB:
+#         return render_template("home.html", user=hashedAuthFromDB["username"])
+#     return render_template("home.html", user=None)
 
 def find_one(email):
   oneUser = mongo_client.db["users_collection"].find_one({"email": email})

@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 import os
 
 
+
 load_dotenv(".flaskenv")
 USERNAME = 'devUser'
 PASSWORD = os.getenv("PASSWORD")
@@ -27,7 +28,7 @@ def create_app():
     mongo_client.init_app(app)
    # from .models import login_manager
     # login_manager.init_app(app)
-    
+ 
     return app
 
 

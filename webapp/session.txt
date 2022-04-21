@@ -7,6 +7,9 @@ I have a state dictionary for each session that will store all pertinent data to
 
 
 Next-time:
-    When a user signs up I will initialize the Session my creating a new session object.
+    When a user signs up I will initialize the Session by creating a new session object.
 
     --need to figure out how to pass the session around my server after I create a session object
+        Idea: I guess I would have to create functions that take the session objects as parameters
+    --also need to figure out how to ensure the session is persistent, might have to initialize it when the server starts..
+    --may need to store the session in the database, but there has to be a way to avoid that

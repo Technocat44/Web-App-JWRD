@@ -2,6 +2,7 @@
 from flask import Flask
 from webapp import create_app, views, auth, upload, images, messages
 
+
 app = create_app()
     # Now that we have created and defined BLUEPRINTS we need to import these Blueprints 
 #                  # the name of the Blueprint is views, auth
@@ -17,4 +18,5 @@ if __name__ == '__main__':
     # having debug set to True is important. The server will reload itself if the code change instead of having to do it
     # manually. 
     #      host,    port, debug
+  # user_session = Session()
    app.run("0.0.0.0",5000, True)
