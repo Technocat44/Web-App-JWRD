@@ -1,8 +1,11 @@
-from flask import Blueprint, redirect, render_template, request, flash, session, url_for
-from webapp.database import check_if_user_exist_on_signup, create_user_in_db, list_all, find_one
-from flask_bcrypt import Bcrypt
+from flask import Blueprint, make_response, redirect, render_template, request, flash, session, url_for
+from webapp.database import add_auth_token_to_users_collection, check_if_user_exist_on_signup, create_user_in_db, list_all, retrieve_user\
+    ,add_auth_token_to_users_collection
+import secrets
+import bcrypt
+import hashlib
 
-bcrypt = Bcrypt()
+# bcrypt = Bcrypt()
 
 auther = Blueprint('auth', __name__)
 
@@ -31,23 +34,58 @@ def login():
             ImmutableMultiDict([('email', 'jamesaqu@buffalo.edu'), ('password', '1234')])
     """
     if request.method == 'POST':
+        print("we are in the post of /login")
         # grab the data the client sent. 
         data = request.form
         print(data)
-        email = request.form.get('email')
+        username = request.form.get('username')
+        print("this is the username from login page: ", username)
         password = request.form.get('password')
+        print("this is the password from the login page ", password)
 
-        if len(email) < 4:
-            flash("Email must be longer than 4 characters.", category='error')
-        elif len(password) < 7:
+        print("this is the password: ", password)
+        if len(password) < 7:
             flash("Passwords must be 8 characters or more.", category='error')
-        else:
-            flash("Successfully Logged in!")
-            session["username"] = find_one(email)["fName"]
-            return render_template('home.html', boolean=True, user=session["username"])
-            
+            return redirect(url_for('auth.login'))
 
-    return render_template('login.html', boolean=False, user=request.form.get('username'))
+        else:
+            userFromDB = retrieve_user(username)
+            print("this is the user from the db, should be False or the user dict: ", userFromDB)
+
+            if not userFromDB:
+                print("yes there is no userName")
+                flash("Incorrect username", category='error')
+                return redirect(url_for('auth.login'))
+
+            # check if password matches
+            else:
+                print("entering else")
+                auth_token = secrets.token_urlsafe(30)  # need to generate auth tokens
+                print("this is the auth token : ",auth_token)
+                saltFromDB = userFromDB["salt"]         # grab salt from userFromDB
+                print("this is the salt  : ",saltFromDB)
+
+                passwordhashFromDB = userFromDB["password"] # grab hashed password from db
+                print("this is the password from database : ",passwordhashFromDB)
+
+                loginhash = bcrypt.hashpw(password.encode(), saltFromDB) # create a hash from the salt and the login password attempt
+                print("this is the new hash from the login password : ",loginhash)
+
+                if loginhash != passwordhashFromDB:
+                    flash("Incorrect password, try again", category='error')
+                    return redirect(url_for('auth.login'))
+                hash_token = hashlib.sha256(auth_token.encode()).hexdigest() # hash the auth_token and store it in db
+                add_auth_token_to_users_collection(hash_token, username) # need to update users_collection with the auth token for the user logging in.
+
+                resp = make_response(render_template("home.html", boolean=True, user=username)) # make a response variable
+                resp.set_cookie("auth_token", auth_token, max_age=7200, httponly=True) # set the unhashed auth token in the cookie
+        
+                session["username"] = username 
+                flash("Successfully Logged in!")
+                return resp
+                
+
+    return render_template('login.html')
 
 # adding a user parameter to the render_template allows us to pass in a value to be dealt with by the html template
 @auther.route('/logout')
@@ -118,9 +156,10 @@ def sign_up():
                 function : check_password_hash(password_hash, password)
 
                 """
-                hash = bcrypt.generate_password_hash(passwordOne, 15)
+                salt = bcrypt.gensalt(15)
+                hash = bcrypt.hashpw(passwordOne.encode(), salt)
                 print("this is the hashed salted password: ", hash)
-                create_user_in_db(username, email, hash)
+                create_user_in_db(email, username, hash, salt)
                 
                 
     

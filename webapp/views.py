@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template, session
-
+from flask import Blueprint, render_template, request, session
+import hashlib
 viewer = Blueprint('views', __name__)
 
 """
@@ -9,7 +9,13 @@ incoming request URL to the view that should handle it. The view returns data th
 
 @viewer.route('/')
 def home():
-    if 'userName' in session:
-        return render_template("home.html", user=session['userName'])
-
+    from webapp.database import retrieve_hashed_auth_token_from_db
+    # want to change it to check the auth_token 
+    auth_token_cookie = request.cookies.get("auth_token", -1)
+    if auth_token_cookie == -1:
+        return render_template("home.html", user=None)
+    hash_of_auth_token_cookie = hashlib.sha256(auth_token_cookie.encode()).hexdigest()
+    hashedAuthFromDB = retrieve_hashed_auth_token_from_db(hash_of_auth_token_cookie)
+    if hashedAuthFromDB:
+        return render_template("home.html", user=hashedAuthFromDB["username"])
     return render_template("home.html", user=None)

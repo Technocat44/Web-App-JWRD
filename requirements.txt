@@ -9,3 +9,6 @@ python-dotenv
 certifi
 flask-bcrypt
 pymongo[srv]
+secrets
+hashlib
+bcrypt

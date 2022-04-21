@@ -3,6 +3,8 @@ from flask import request
 from flask_pymongo import PyMongo
 import certifi
 
+from webapp import auth
+
 mongo_client = PyMongo(tlsCAFile=certifi.where())
 
 
@@ -40,9 +42,9 @@ def get_next_id():
   {"username": "jamesaqu", "email": "jamesaqu@buffalo.edu",  "password": "$2js7fng84n7ab7fb949",
    "id": Number, "auth_token": will be blank at sign up }
 """
-def create_user_in_db(email, username, hashedpw):
+def create_user_in_db(email, username, hashedpw, salt):
   users_collection = mongo_client.db["users_collection"]
-  userDict = {"email":email, "username":username, "password":hashedpw}
+  userDict = {"email":email, "username":username, "password":hashedpw,"salt":salt}
   userDict["id"] = get_next_id()
   users_collection.insert_one(userDict)
   userDict.pop("_id")
@@ -64,6 +66,26 @@ def check_if_user_exist_on_signup(username) -> bool:
   else: # if the query does not return a username, return False
     return False
 
+def retrieve_user(username) -> dict:
+  users_collection = mongo_client.db["users_collection"]
+  userFromDb = users_collection.find_one({"username":username}, {"_id":0}) # retrieve user and ignore _id tag
+  if userFromDb:
+    return userFromDb
+  else:
+    return False
+
+def add_auth_token_to_users_collection(auth_token, username):
+  users_collection = mongo_client.db["users_collection"]
+  users_collection.find_one_and_update({"username":username},
+                               { "$set" : {"auth_token":auth_token} }) 
+
+def retrieve_hashed_auth_token_from_db(hash_auth_cookie):
+  users_collection = mongo_client.db["users_collection"]
+  authTokenFromDB = users_collection.find_one({"auth_token":hash_auth_cookie})
+  if authTokenFromDB:
+    return authTokenFromDB
+  else:
+    return False
 
 def find_one(email):
   oneUser = mongo_client.db["users_collection"].find_one({"email": email})
