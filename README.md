@@ -33,6 +33,11 @@ https://testdriven.io/blog/flask-sessions/
 Database Querying in MongoDB
 https://www.mongodb.com/docs/manual/tutorial/query-documents/
 https://www.mongodb.com/docs/manual/reference/operator/query/#std-label-query-selectors
+
+Set a cookie in flask
+https://stackoverflow.com/questions/46661083/how-to-set-cookie-in-python-flask
+
+
 Workflow tips:
 
 IMPORTANT: To run everything locally there will be some commands that need to be commented out.
