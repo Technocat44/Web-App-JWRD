@@ -3,6 +3,7 @@ from flask import request
 from flask_pymongo import PyMongo
 import certifi
 import hashlib
+import random
 
 from webapp import auth
 
@@ -138,6 +139,7 @@ def getPhotos():
 
 def add_message(user1, user2, message):
   # find if a collection for these users exist
+  mongo_client.db["messages_collections"].drop()
   temp = mongo_client.db["messages_collections"].find({"users": {"$all": [user1, user2]}})
   found = []
   message_collections = mongo_client.db["messages_collections"]
@@ -145,7 +147,8 @@ def add_message(user1, user2, message):
     found.append(x)
   print(found)
   if len(found) == 0:
-    message_collections.insert_one({"users": [user1, user2], "messages":[{"user": user1, "message": message}]})
+    rid = user1+user2
+    message_collections.insert_one({"users": [user1, user2], "rid": rid, "messages":[{"user": user1, "message": message}]})
   else:
     query = {"users": {"$all": [user1, user2]}}
     appender = {"$push":{"messages": {"user": user1, "message": message}}}
@@ -163,3 +166,11 @@ def list_messages(user1, user2):
     return []
   else:
     return found
+
+def add_user_sid(username, sid):
+  database = mongo_client.db["session_ids"]
+  if database.find_one({"username"}) == None:
+    database.insert_one({'username': username, 'sid': sid})
+
+def delete_user_sid(username):
+  return 0
