@@ -263,6 +263,7 @@ input[type="email"] {
 .svg_div:hover {
   transform: scale(1.25);
   transition-duration: .2s;
+  cursor: pointer;
 }
 
 .svg_div {
@@ -289,4 +290,94 @@ input[type="email"] {
 .userCard_description {
   width: 100%;
   margin-left: 4px;
+}
+
+.messageWindow {
+  background-color: #404040;
+  border: solid #5865F2 2px;
+  width: 340px;
+  height: 450px;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  border-radius: 20px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+}
+
+.messageWindow_top_exitButton {
+  display: flex;
+  justify-content: end;
+  margin-right: 7px;
+}
+
+.messageWindow_top_exitButton_svg:hover {
+  transform: scale(1.3);
+  transition-duration: .15s;
+  cursor: pointer;
+}
+
+.messageWindow_top_exitButton_svg {
+  transform: scale(1);
+  transition-duration: .15s;
+  width: 20px;
+  height: 20px;
+  margin-top: 5px;
+  filter: invert(37%) sepia(22%) saturate(4244%) hue-rotate(216deg) brightness(98%) contrast(94%);
+}
+
+.messageWindow_top_title {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  font-size: 19px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  margin-top: -17px;
+}
+
+.messageWindow_messages {
+  margin-top: 5px;
+  width: 300px;
+  height: 352px;
+  background-color: #5b5a5a;
+  border-radius: 20px;
+  align-self: center;
+  margin-bottom: 3px;
+}
+
+.messageWindow_bottom {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.messageWindow_bottom_input {
+  background-color: transparent;
+  color: white;
+  font-size: 13px;
+  border: 0px #5b5a5a;
+}
+
+.messageWindow_bottom_inputDiv {
+  width: 260px;
+  border-radius: 15px;
+  /* background-color: #5b5a5a; */
+  border: 0px;
+}
+
+.messageWindow_bottom_submit {
+  width: 30px;
+  background-color: #5865F2;
+  border: 0px;
+  border-radius: 20px;
+  padding: 0px;
+}
+
+.messageWindow_bottom_submit_svg {
+  filter: invert(99%) sepia(100%) saturate(2%) hue-rotate(227deg) brightness(106%) contrast(100%);
+  width: 10px;
+  height: 10px;
 }
