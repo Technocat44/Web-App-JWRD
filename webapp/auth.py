@@ -1,4 +1,4 @@
-#from nis import cat
+# from nis import cat
 from flask import Blueprint, make_response, redirect, render_template, request, flash, url_for
 from webapp.database import add_auth_token_to_users_collection, check_if_user_exist_on_signup, create_user_in_db, list_all, retrieve_user\
     ,add_auth_token_to_users_collection
