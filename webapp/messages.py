@@ -1,8 +1,9 @@
-from flask import Blueprint, render_template,request, flash, session, blueprints
+from flask import Blueprint, render_template,request, flash, session, blueprints, send_file
 from webapp.database import add_message,list_messages
 from webapp.__init__ import socketio
 from flask_socketio import emit, send
 from webapp.models import user_session
+import json
 
 messager = Blueprint("message", __name__)
 
@@ -14,14 +15,16 @@ def home():
         #d.add_message(,request.form.get("receiver"), request.form.get("message"))
         receiver = request.form.get('receiver')
         msg = request.form.get('message')
-        add_message(user_session.get_username(), receiver, escapeHTML(msg))
-    #return render_template("templates/messages.html", length = len(list_messages("user1", "user2")), messages = list_messages("user1", "user2"))
-    messages = list_messages(session.get('username'), receiver)
-    return render_template("messages.html", msgs = messages)
+        username = user_session.get_username()
+        if username != None:
+            add_message(username, receiver, escapeHTML(msg))
+            messages = list_messages(username, receiver)
+            return render_template("messages.html", msgs = messages)
+    return render_template('messages.html', msgs=[])
 
-# @socketio.on('join-chat')
-# def connect_private_chat(data):
-#   request.form.get("receiver")
+@socketio.on('join-chat')
+def connect_private_chat(data):
+    request.form.get("receiver")
 
 def escapeHTML(message):
     m = message.replace("&", "&amp")
