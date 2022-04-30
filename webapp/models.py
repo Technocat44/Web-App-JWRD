@@ -19,7 +19,7 @@ session_data.get_authentication   === True    ||      signals the user is logged
 class Session(object):
 
     def __init__(self, login):
-        self.state = {"login":login} # each session will have its own state to key track of the session data
+        self.state = {"login":login, "username": None} # each session will have its own state to key track of the session data
         self.login = login
 
     # def set_authentication(self, authenticated: bool): 
@@ -44,7 +44,7 @@ class Session(object):
         self.state["username"] = username
     
     def get_username(self):
-        return self.username
+        return self.state["username"]
 
     def set_session_cookie(self, auth_cookie: str): 
         """
