@@ -13,14 +13,15 @@
 
   <title>{% block title %} Homepage {% endblock %}</title>
   <body>
-    <div class="active">
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/message">Messages</a></li>
-        <li><a href="/login">Login</a></li>
-        <li><a href="/logout">Logout</a></li>
-        <li><a href="/sign-up">Sign-Up</a></li>
-        <li><a href="/upload">Uploads</a></li>
+    <div class="navbar">
+      <ul class="navbar_list">
+        <li class="navbar_list_button"><a class="navbar_list_button_link" href="/message">Messages</a></li>
+        <li class="navbar_list_button"><a class="navbar_list_button_link" href="/users">Users</a></li>
+        <li class="navbar_list_button"><a class="navbar_list_button_link" href="/upload">Uploads</a></li>
+        <li class="navbar_list_home navbar_list_button"><a href="/"><img class="navbar_list_home_image navbar_list_button_link" src="../static/assets/jesseGif.gif" alt="Home"></a></li>
+        <li class="navbar_list_button"><a class="navbar_list_button_link" href="/login">Login</a></li>
+        <li class="navbar_list_home navbar_list_button"><a class="navbar_list_button_link" href="/logout">Logout</a></li>
+        <li class="navbar_list_button"><a class="navbar_list_button_link" href="/sign-up">Sign-Up</a></li>
       </ul>
     </div>
     {% with messages = get_flashed_messages(with_categories=true) %}
