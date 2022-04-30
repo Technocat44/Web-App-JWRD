@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_socketio import SocketIO
 #from flask_pymongo import PyMongo
 from dotenv import load_dotenv
 import os
@@ -14,7 +15,7 @@ print("U " ,USERNAME)
 print("P "  ,PASSWORD)
 print("D ", DATABASE) 
 
-
+socketio = SocketIO()
 
 def create_app():
     # __name__ is the name of the current Python module. 
@@ -26,6 +27,7 @@ def create_app():
     app.config["MONGO_URI"] = f"mongodb+srv://{USERNAME}:{PASSWORD}@clusterjwrd.49opx.mongodb.net/{DATABASE}?retryWrites=true&w=majority"
     from .database import mongo_client
     mongo_client.init_app(app)
+    socketio.init_app(app)
    # from .models import login_manager
     # login_manager.init_app(app)
  

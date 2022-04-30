@@ -2,6 +2,7 @@
 from flask import Flask
 from webapp import create_app, views, auth, upload, images, messages
 
+ws_users = {}
 
 app = create_app()
     # Now that we have created and defined BLUEPRINTS we need to import these Blueprints 

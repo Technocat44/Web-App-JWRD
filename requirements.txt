@@ -12,3 +12,4 @@ pymongo[srv]
 secrets
 hashlib
 bcrypt
+flask-socketio
