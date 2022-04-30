@@ -1,9 +1,9 @@
-
+from xmlrpc.client import Boolean
 from flask import request
 from flask_pymongo import PyMongo
 import certifi
 import hashlib
-from webapp.models import user_session
+import random
 
 from webapp import auth
 
@@ -23,17 +23,6 @@ https://stackoverflow.com/questions/28968660/how-to-convert-a-pymongo-cursor-cur
 """
 
 
-#TODO: add user_session to the database, this should happen when a user successfully logs in
-def add_user_session_to_db(user_name, login_key):
-  logged_in_collection = mongo_client.db["logged_in"]
-  if user_name == None:
-    # if the user hasn't logged in their username will be None and they shouldn't be storing a session yet
-    return False
-  if login_key == False:
-    return False
-  logged_in_doc = {"username": user_name, "login": login_key}
-  logged_in_collection.insert_one(logged_in_doc)
-  return True
 
 # when ever we need a new id, we go into our file collection
 # find one document, (that's all we will have in this collection)
@@ -49,18 +38,15 @@ def get_next_id():
     users_id_collection.insert_one({"last_id": 1})
     return 1
 
-def set_user_login_to_true(username, bool):
-  users_collection = mongo_client.db["users_collection"]
-  users_collection.find_one_and_update({"username":username}, {"$set": {"login": bool}})
 
 """
    user_collection example =
   {"username": "jamesaqu", "email": "jamesaqu@buffalo.edu",  "password": "$2js7fng84n7ab7fb949",
    "id": Number, "auth_token": will be blank at sign up }
 """
-def create_user_in_db(email, username, hashedpw, salt, login, profpic):
+def create_user_in_db(email, username, hashedpw, salt):
   users_collection = mongo_client.db["users_collection"]
-  userDict = {"email":email, "username":username, "password":hashedpw,"salt":salt, "login":login, "profilePic": profpic}
+  userDict = {"email":email, "username":username, "password":hashedpw,"salt":salt}
   userDict["id"] = get_next_id()
   users_collection.insert_one(userDict)
   userDict.pop("_id")
@@ -90,40 +76,14 @@ def retrieve_user(username) -> dict:
   else:
     return False
 
-def add_auth_token_to_users_collection(hash_auth_token, username):
+def add_auth_token_to_users_collection(auth_token, username):
   users_collection = mongo_client.db["users_collection"]
-  print("/database::: addng auth token to user collection")
-  print("/database::this is the user I am using to update auth_token", username)
-  users_collection.find_one_and_update({"username":username["username"]},
-                               { "$set" : {"auth_token":hash_auth_token} }) 
-
-# THE UNIVERSAL FUNCTION
-# get user_collection from a matching cookie
-def get_user_collection_via_auth_token(auth_token):
-  users_collection = mongo_client.db["users_collection"]
-  hash_of_auth_token_cookie = hashlib.sha256(auth_token.encode()).hexdigest()
-  print("/database hash of auth token cookie", hash_of_auth_token_cookie)
-  userVerifiedFromDB = users_collection.find_one({"auth_token":hash_of_auth_token_cookie})
-  return userVerifiedFromDB
-
-def update_auth_token_to_None(username):
-  users_collection = mongo_client.db["users_collection"]
-  users_collection.find_one_and_update({"username":username["username"]}, {"$set": {"auth_token": None}} )
-# this function should update a users login to false
-def update_login_to_False(username):
-  users_collection = mongo_client.db["users_collection"]
-  new_values = {"$set": {"login": False}}
-  print("/database, update login to false", username)
-  print("/database this is the username", username["username"])
-  users_collection.find_one_and_update({"username": username["username"] }, new_values )
-  
-
-  
+  users_collection.find_one_and_update({"username":username},
+                               { "$set" : {"auth_token":auth_token} }) 
 
 def retrieve_hashed_auth_token_from_db(hash_auth_cookie):
   users_collection = mongo_client.db["users_collection"]
   authTokenFromDB = users_collection.find_one({"auth_token":hash_auth_cookie})
-
   if authTokenFromDB:
     return authTokenFromDB
   else:
@@ -179,6 +139,7 @@ def getPhotos():
 
 def add_message(user1, user2, message):
   # find if a collection for these users exist
+  mongo_client.db["messages_collections"].drop()
   temp = mongo_client.db["messages_collections"].find({"users": {"$all": [user1, user2]}})
   found = []
   message_collections = mongo_client.db["messages_collections"]
@@ -186,7 +147,8 @@ def add_message(user1, user2, message):
     found.append(x)
   print(found)
   if len(found) == 0:
-    message_collections.insert_one({"users": [user1, user2], "messages":[{"user": user1, "message": message}]})
+    rid = user1+user2
+    message_collections.insert_one({"users": [user1, user2], "rid": rid, "messages":[{"user": user1, "message": message}]})
   else:
     query = {"users": {"$all": [user1, user2]}}
     appender = {"$push":{"messages": {"user": user1, "message": message}}}
@@ -205,9 +167,14 @@ def list_messages(user1, user2):
   else:
     return found
 
-def insertProfilePic(imageID,user):
-  users_collection = mongo_client.db["users_collection"]
-  photoData = {'path': 'image-' + str(imageID) + '.jpg'}
-  users_collection.update_one({'username' : user},{'$set' : { "profile_pic" : photoData}})
-  #mongo_client.db.drop_collection("paths")
-  return True
+def add_user_sid(username, sid):
+  database = mongo_client.db["session_ids"]
+  if database.find_one({"username"}) == None:
+    database.insert_one({'username': username, 'sid': sid})
+
+def delete_user_sid(username):
+  return 0
+
+def find_user_sid(username):
+  database = mongo_client.db["session_ids"]
+  return database.find_one()
