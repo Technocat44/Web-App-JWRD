@@ -2,7 +2,7 @@ from flask import Blueprint, render_template,request
 from flask import Flask, render_template, request, redirect, url_for
 
 from webapp.database import insertProfilePic
-from .database import getPhotos, getImageFileID,insertImages
+from .database import getPhotos, getImageFileID,insertImages, get_user_collection_via_auth_token
 from .templeter import createList
 
 accounter = Blueprint('account', __name__)
@@ -21,7 +21,7 @@ def home():
         if len(request.files.get('upload').filename):
         #print(request.form)
         #print(request.files)
-            print(request.get_data())
+            #print(request.get_data())
             bite = (request.get_data().split(b'image/jpeg'))
             bite = bite[1].split(b'-------WebKit')
             bite = bite[0][4:-2]
@@ -32,10 +32,6 @@ def home():
                 file.write(bite)
                 file.close()
             #imageList = getPhotos()
-            imLen = int(len(imageList))
+            #imLen = int(len(imageList))
             #return render_template('upload.html', boolean=False, imList= imageList)
-        else:
-            imageList = getPhotos()
-            return render_template('upload.html', boolean=False)
-    imageList = getPhotos()
     return render_template('account.html', boolean=False)
