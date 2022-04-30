@@ -1,8 +1,9 @@
-from xmlrpc.client import Boolean
+
 from flask import request
 from flask_pymongo import PyMongo
 import certifi
 import hashlib
+from webapp.models import user_session
 
 from webapp import auth
 
@@ -22,6 +23,17 @@ https://stackoverflow.com/questions/28968660/how-to-convert-a-pymongo-cursor-cur
 """
 
 
+#TODO: add user_session to the database, this should happen when a user successfully logs in
+def add_user_session_to_db(user_name, login_key):
+  logged_in_collection = mongo_client.db["logged_in"]
+  if user_name == None:
+    # if the user hasn't logged in their username will be None and they shouldn't be storing a session yet
+    return False
+  if login_key == False:
+    return False
+  logged_in_doc = {"username": user_name, "login": login_key}
+  logged_in_collection.insert_one(logged_in_doc)
+  return True
 
 # when ever we need a new id, we go into our file collection
 # find one document, (that's all we will have in this collection)
@@ -37,15 +49,18 @@ def get_next_id():
     users_id_collection.insert_one({"last_id": 1})
     return 1
 
+def set_user_login_to_true(username, bool):
+  users_collection = mongo_client.db["users_collection"]
+  users_collection.find_one_and_update({"username":username}, {"$set": {"login": bool}})
 
 """
    user_collection example =
   {"username": "jamesaqu", "email": "jamesaqu@buffalo.edu",  "password": "$2js7fng84n7ab7fb949",
    "id": Number, "auth_token": will be blank at sign up }
 """
-def create_user_in_db(email, username, hashedpw, salt):
+def create_user_in_db(email, username, hashedpw, salt, login, profpic):
   users_collection = mongo_client.db["users_collection"]
-  userDict = {"email":email, "username":username, "password":hashedpw,"salt":salt}
+  userDict = {"email":email, "username":username, "password":hashedpw,"salt":salt, "login":login, "profilePic": profpic}
   userDict["id"] = get_next_id()
   users_collection.insert_one(userDict)
   userDict.pop("_id")
@@ -75,14 +90,40 @@ def retrieve_user(username) -> dict:
   else:
     return False
 
-def add_auth_token_to_users_collection(auth_token, username):
+def add_auth_token_to_users_collection(hash_auth_token, username):
   users_collection = mongo_client.db["users_collection"]
-  users_collection.find_one_and_update({"username":username},
-                               { "$set" : {"auth_token":auth_token} }) 
+  print("/database::: addng auth token to user collection")
+  print("/database::this is the user I am using to update auth_token", username)
+  users_collection.find_one_and_update({"username":username["username"]},
+                               { "$set" : {"auth_token":hash_auth_token} }) 
+
+# THE UNIVERSAL FUNCTION
+# get user_collection from a matching cookie
+def get_user_collection_via_auth_token(auth_token):
+  users_collection = mongo_client.db["users_collection"]
+  hash_of_auth_token_cookie = hashlib.sha256(auth_token.encode()).hexdigest()
+  print("/database hash of auth token cookie", hash_of_auth_token_cookie)
+  userVerifiedFromDB = users_collection.find_one({"auth_token":hash_of_auth_token_cookie})
+  return userVerifiedFromDB
+
+def update_auth_token_to_None(username):
+  users_collection = mongo_client.db["users_collection"]
+  users_collection.find_one_and_update({"username":username["username"]}, {"$set": {"auth_token": None}} )
+# this function should update a users login to false
+def update_login_to_False(username):
+  users_collection = mongo_client.db["users_collection"]
+  new_values = {"$set": {"login": False}}
+  print("/database, update login to false", username)
+  print("/database this is the username", username["username"])
+  users_collection.find_one_and_update({"username": username["username"] }, new_values )
+  
+
+  
 
 def retrieve_hashed_auth_token_from_db(hash_auth_cookie):
   users_collection = mongo_client.db["users_collection"]
   authTokenFromDB = users_collection.find_one({"auth_token":hash_auth_cookie})
+
   if authTokenFromDB:
     return authTokenFromDB
   else:

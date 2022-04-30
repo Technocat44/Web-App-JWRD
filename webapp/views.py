@@ -2,7 +2,6 @@ from flask import Blueprint, render_template, request
 # from webapp.auth import user_session
 import hashlib
 
-from flask_login import user_accessed
 viewer = Blueprint('views', __name__)
 
 """
@@ -28,13 +27,14 @@ def home():
     # # this checks the auth token cookie and verifies if it matches one from the database
     # # only a logged in user should have an auth token 
     # # want to change it to check the auth_token 
-    from webapp.database import retrieve_hashed_auth_token_from_db
+    from webapp.database import get_user_collection_via_auth_token
 
     auth_token_cookie = request.cookies.get("auth_token", -1)
+    print("/home tis is the the auth_token_cookie from the views.py file", auth_token_cookie)
     if auth_token_cookie == -1:
         return render_template("home.html", user=None)
-    hash_of_auth_token_cookie = hashlib.sha256(auth_token_cookie.encode()).hexdigest()
-    hashedAuthFromDB = retrieve_hashed_auth_token_from_db(hash_of_auth_token_cookie)
-    if hashedAuthFromDB:
-        return render_template("home.html", user=hashedAuthFromDB["username"])
+    userVerifiedFromDatabase = get_user_collection_via_auth_token(auth_token_cookie)
+    print("/home this is the hashed auth token form the database", userVerifiedFromDatabase)
+    if userVerifiedFromDatabase:
+        return render_template("home.html", user=userVerifiedFromDatabase["username"])
     return render_template("home.html", user=None)
