@@ -204,3 +204,10 @@ def list_messages(user1, user2):
     return []
   else:
     return found
+
+def insertProfilePic(imageID,user):
+  users_collection = mongo_client.db["users_collection"]
+  photoData = {'path': 'image-' + str(imageID) + '.jpg'}
+  users_collection.update_one({'username' : user},{'$set' : { "profile_pic" : photoData}})
+  #mongo_client.db.drop_collection("paths")
+  return True
