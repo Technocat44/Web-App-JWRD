@@ -17,9 +17,10 @@ auther = Blueprint('auth', __name__)
 @auther.route('/login', methods=['GET', 'POST'])
 def login():
     # global user_session
-    if user_session.get_login():
-        flash("Already logged in")
-        return redirect(url_for('views.home'))
+    # if user_session.get_login():
+    #     flash("Already logged in")
+    #     return redirect(url_for('views.home'))
+
     """
     A session is used to store information related to a user, across different requests, as they interact with a web app.
     
@@ -99,6 +100,7 @@ def login():
                 user_session.print_session_state()
                 
                 # session["username"] = username 
+                # TODO: want to add user_session to a collection in the database to keep track of who is logged in
 
 
                 resp = make_response(render_template("home.html", boolean=True, user=user_session.username)) # make a response variable
@@ -123,7 +125,9 @@ def logout():
     goodbyeUser = user_session.get_username()
     user_session.set_log_out()
     user_session.print_session_state()
+    #TODO: delete the auth token when logging out
     flash("Successfully Logged out!")
+    # TODO: I want to go into the logged_in collection in the database and remove the user who is logging out
 
     # when a user logs out, we need to set logout to true 
     # but we also want to wipe their session object
