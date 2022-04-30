@@ -1,11 +1,12 @@
 # from nis import cat
 from flask import Blueprint, make_response, redirect, render_template, request, flash, url_for
-from webapp.database import add_auth_token_to_users_collection, check_if_user_exist_on_signup, create_user_in_db, list_all, retrieve_user\
-    ,add_auth_token_to_users_collection
+from webapp.database import add_auth_token_to_users_collection, check_if_user_exist_on_signup, create_user_in_db, list_all, retrieve_hashed_auth_token_from_db, retrieve_user\
+    ,add_auth_token_to_users_collection, set_user_login_to_true, get_user_collection_via_auth_token, update_auth_token_to_None ,update_login_to_False\
+        ,update_auth_token_to_None
 import secrets
 import bcrypt
 import hashlib
-from webapp.models import user_session
+# from webapp.models import user_session
 
 # bcrypt = Bcrypt()
 
@@ -16,6 +17,7 @@ auther = Blueprint('auth', __name__)
 #@auther.before_request()
 @auther.route('/login', methods=['GET', 'POST'])
 def login():
+   
     # global user_session
     # if user_session.get_login():
     #     flash("Already logged in")
@@ -80,67 +82,100 @@ def login():
                 if loginhash != passwordhashFromDB:
                     flash("Incorrect password, try again", category='error')
                     return redirect(url_for('auth.login'))
-                auth_token = secrets.token_urlsafe(50)  # need to generate auth tokens
-                print("this is the auth token : ",auth_token)
+                new_auth_token = secrets.token_urlsafe(50)  # need to generate auth tokens
+                print("this is the auth token : ",new_auth_token)
 
-                hash_token = hashlib.sha256(auth_token.encode()).hexdigest() # hash the auth_token and store it in db
-                add_auth_token_to_users_collection(hash_token, username) # need to update users_collection with the auth token for the user logging in.
+                hash_of_auth_token_cookie = hashlib.sha256(new_auth_token.encode()).hexdigest()
+                print("/login this is the hash_of the new auth token", hash_of_auth_token_cookie)
+               # hash_token = hashlib.sha256(new_auth_token.encode()).hexdigest() # hash the auth_token and store it in db
+                add_auth_token_to_users_collection(hash_of_auth_token_cookie, userFromDB) # need to update users_collection with the auth token for the user logging in.
 
-
-                # create a session object
+                # grabbing_hash = get_user_collection_via_auth_token(new_auth_token)
+                # print("/login, right after storing the hased auth_token, I am retrieving the same auth token from db", grabbing_hash["username"])
+                # # update user_collection to set login to True
+                set_user_login_to_true(userFromDB["username"],True)
                 
 
                 
                 print("before the user sets anything")
-                user_session.print_session_state()
-                user_session.set_username(username)
-                user_session.set_login(True)
+                
+                # user_session.print_session_state()
+                # user_session.set_username(username)
+                # user_session.set_login(True)
                 # I want to set the auth-token to the one set in the database
                 print("after we set some of the session data")
-                user_session.print_session_state()
+                # user_session.print_session_state()
                 
                 # session["username"] = username 
                 # TODO: want to add user_session to a collection in the database to keep track of who is logged in
 
-
-                resp = make_response(render_template("home.html", boolean=True, user=user_session.username)) # make a response variable
-                resp.set_cookie("auth_token", auth_token, max_age=7200, httponly=True) # set the unhashed auth token in the cookie
+                # from webapp.database import add_user_session_to_db
+                # add_user_session_to_db(user_session.get_username(), user_session.get_login())
+                resp = make_response(render_template("home.html", boolean=True, user=userFromDB["username"])) # make a response variable
+                resp.set_cookie("auth_token", new_auth_token, max_age=7200, httponly=True) # set the unhashed auth token in the cookie
         
 
               
                 flash("Successfully Logged in!")
                 return resp
-                
-
-    return render_template('login.html')
+    print("user already has been been logged in /login")
+    auth_token_cookie = request.cookies.get("auth_token", -1)
+    # hash it so I can search for it in the database
+    print("this is the auth_token_cookie in /login", auth_token_cookie)
+    if auth_token_cookie == -1:
+        return render_template("login.html", user=None)
+    userVerifiedFromDatabase = get_user_collection_via_auth_token(auth_token_cookie)
+    if userVerifiedFromDatabase == None:
+        return render_template("login.html", user=None)
+    set_user_login_to_true(userVerifiedFromDatabase["username"], True)
+    print("this is the user from the db with a matching authtoken in /login")
+    print(userVerifiedFromDatabase, flush =True)
+    if userVerifiedFromDatabase == None:
+        return render_template("login.html", user=None)
+    return render_template('home.html', user=userVerifiedFromDatabase["username"])
 
 # adding a user parameter to the render_template allows us to pass in a value to be dealt with by the html template
 @auther.route('/logout')
 def logout():
     # I added this function call to make sure that its working properly, you can see the output in the terminal
-    if user_session.get_login() == False:
-        return render_template('logout.html')
+    # if user_session.get_login() == False:
+    #     return   render_template('logout.html')
 
+    # get current auth token from browser
+    auth_token_cookie = request.cookies.get("auth_token", -1)
+    # hash it so I can search for it in the database
+    
+    if auth_token_cookie == False:
+        return render_template("home.html", user=None)
+    userVerifiedFromDatabase = get_user_collection_via_auth_token(auth_token_cookie)
+    print(userVerifiedFromDatabase, flush =True)
+    if userVerifiedFromDatabase == None:
+        return render_template("home.html", user=None)
     list_all()
-    goodbyeUser = user_session.get_username()
-    user_session.set_log_out()
-    user_session.print_session_state()
+    # goodbyeUser = user_session.get_username()
+    # user_session.set_log_out()
+    # user_session.print_session_state()
     #TODO: delete the auth token when logging out
+    usernameToDisplayOnLogout = userVerifiedFromDatabase["username"]
+
+    update_login_to_False(userVerifiedFromDatabase)
+    update_auth_token_to_None(userVerifiedFromDatabase)
     flash("Successfully Logged out!")
     # TODO: I want to go into the logged_in collection in the database and remove the user who is logging out
+    return render_template('logout.html', user=usernameToDisplayOnLogout)
 
-    # when a user logs out, we need to set logout to true 
-    # but we also want to wipe their session object
-    # so before we wipe it, we grab the user name and store it in a variable, this way we can proceed to wipe the state
+        # when a user logs out, we need to set logout to true 
+        # but we also want to wipe their session object
+        # so before we wipe it, we grab the user name and store it in a variable, this way we can proceed to wipe the state
     # but still say good bye by passing the username variable we just created to user=<user variable> in render_template
-    return render_template('logout.html', user=goodbyeUser)
+    return render_template('logout.html', user=usernameToDisplayOnLogout)
 
 @auther.route('/sign-up', methods=['GET','POST'])
 def sign_up():
 
-    from webapp.database import retrieve_hashed_auth_token_from_db
+    #from webapp.database import retrieve_hashed_auth_token_from_db
     # want to change it to check the auth_token 
- 
+    
     # global user_session
     username = None
     auth_token_cookie = request.cookies.get("auth_token", -1)
@@ -207,8 +242,10 @@ def sign_up():
                     """
                     salt = bcrypt.gensalt(15)
                     hash = bcrypt.hashpw(passwordOne.encode(), salt)
+                    login = False
+                    profpic = None
                     print("this is the hashed salted password: ", hash)
-                    create_user_in_db(email, username, hash, salt)
+                    create_user_in_db(email, username, hash, salt, login, profpic)
                     
                     
                     # session["username"] = username
@@ -217,15 +254,15 @@ def sign_up():
 
     else: 
         print("the user has an auth token")
-        hash_of_auth_token_cookie = hashlib.sha256(auth_token_cookie.encode()).hexdigest()
-        hashedAuthFromDB = retrieve_hashed_auth_token_from_db(hash_of_auth_token_cookie)
-        if hashedAuthFromDB:
-            print("this is the user_session variable: ", user_session)
-            print(user_session.print_session_state())
+        
+        auth_token_from_Db = get_user_collection_via_auth_token(auth_token_cookie)
+        if auth_token_from_Db:
+            # print("this is the user_session variable: ", user_session)
+            # print(user_session.print_session_state())
             try:
                 flash("You might be logged in already", category='error')
-                print(user_session.get_username(), "this is what get_username returns after I logout")
-                return render_template("sign-up.html", user=user_session.get_username())        
+                # print(user_session.get_username(), "this is what get_username returns after I logout")
+                return render_template("sign-up.html", user=username)        
 
             except:
                 return render_template("sign-up.html")        

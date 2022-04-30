@@ -1,7 +1,5 @@
 # from flask_login import LoginManager, UserMixin
 
-from webapp import auth
-from .database import mongo_client
 
 
 # login_manager = LoginManager()

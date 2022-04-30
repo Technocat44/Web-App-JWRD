@@ -24,6 +24,7 @@ def create_app():
     # SECRET_KEY is used by Flask and extensions to keep data safe. It’s set to 'dev' to provide a convenient value during 
     # development, but it should be overridden with a random value when deploying.
     app.config['SECRET_KEY'] = 'dev'
+    app.config['TEMPLATES_AUTO_RELOAD'] = True
     app.config["MONGO_URI"] = f"mongodb+srv://{USERNAME}:{PASSWORD}@clusterjwrd.49opx.mongodb.net/{DATABASE}?retryWrites=true&w=majority"
     from .database import mongo_client
     mongo_client.init_app(app)
