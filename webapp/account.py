@@ -32,7 +32,6 @@ def home():
                 file.write(bite)
                 file.close()
             #imageList = getPhotos()
-            imLen = int(len(imageList))
             #return render_template('upload.html', boolean=False, imList= imageList)
         else:
             imageList = getPhotos()
