@@ -208,6 +208,10 @@ def list_messages(user1, user2):
 def insertProfilePic(imageID,user):
   users_collection = mongo_client.db["users_collection"]
   photoData = {'path': 'image-' + str(imageID) + '.jpg'}
-  users_collection.update_one({'username' : user},{'$set' : { "profile_pic" : photoData}})
+  print(user['username'],flush = True)
+  for users in users_collection.find():
+    if users['username'] == user['username']:
+      users_collection.update_one(users,{'$set' : { "profile_pic" : photoData}})
+      print('switched',flush = True)
   #mongo_client.db.drop_collection("paths")
   return True
