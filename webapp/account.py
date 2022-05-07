@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template,request
 from flask import Flask, render_template, request, redirect, url_for
 
-from webapp.database import insertProfilePic
+from webapp.database import insertProfilePic, insertDesc
 from .database import getPhotos, getImageFileID,insertImages, get_user_collection_via_auth_token
 from .templeter import createList
 
@@ -16,18 +16,25 @@ incoming request URL to the view that should handle it. The view returns data th
 def home():
     token = request.cookies.get('auth_token',-1)
     username = get_user_collection_via_auth_token(token)
-    if len(request.get_data()) != 0 and token != -1:
+    print(request.get_data(),flush=True)
+    if request.get_data().__contains__(b'filename'):
+         imageUpload(token,username)
+    if request.get_data().__contains__(b'description'):
+        descUpload(token,username)
+    return render_template('account.html', boolean=False)
+
+
+
+def imageUpload(token,username):
+    if (request.get_data()) != 0 and token != -1:
         print(len(request.files.get('upload').filename))
         if len(request.files.get('upload').filename):
-        #print(request.form)
-        #print(request.files)
+            #print(request.form)
+            #print(request.files)
             #print(request.get_data())
+            # test
             bite = (request.get_data().split(b'image/jpeg'))
-<<<<<<< HEAD
-            bite = bite[1].split(b'-------WebKit')
-=======
-            bite = bite[1].split(b'------')
->>>>>>> 1b6075401ea5d822da26017523d2e831254909a7
+            bite = bite[1].split(b'-------')
             bite = bite[0][4:-2]
             #print(bite)
             id = getImageFileID()
@@ -37,10 +44,6 @@ def home():
                 file.close()
             #imageList = getPhotos()
             #imLen = int(len(imageList))
-<<<<<<< HEAD
-            #return render_template('upload.html', boolean=False, imList= imageList)
-    return render_template('account.html', boolean=False)
-=======
             return 0
         return -1
 
@@ -54,7 +57,7 @@ def descUpload(token,username):
         bite = (request.get_data().split(b'name=\"description\"'))
         print('SPLIT 1:')
         print(bite)
-        bite = bite[1].split(b'------')
+        bite = bite[1].split(b'----------')
         print('SPLIT 2:')
         print(bite,flush=True)
         bite = bite[0][4:-2]
@@ -65,4 +68,3 @@ def descUpload(token,username):
         #imLen = int(len(imageList))
         return 0
     return -1
->>>>>>> 1b6075401ea5d822da26017523d2e831254909a7
