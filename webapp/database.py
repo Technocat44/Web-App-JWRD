@@ -215,3 +215,9 @@ def insertProfilePic(imageID,user):
       print('switched',flush = True)
   #mongo_client.db.drop_collection("paths")
   return True
+
+
+  # def getProfilePic(user):
+  #   users_collection = mongo_client.db["users_collection"]
+  #   for users in users_collection.find():
+  #     if()
