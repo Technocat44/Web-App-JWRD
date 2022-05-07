@@ -23,7 +23,11 @@ def home():
         #print(request.files)
             #print(request.get_data())
             bite = (request.get_data().split(b'image/jpeg'))
+<<<<<<< HEAD
             bite = bite[1].split(b'-------WebKit')
+=======
+            bite = bite[1].split(b'------')
+>>>>>>> 1b6075401ea5d822da26017523d2e831254909a7
             bite = bite[0][4:-2]
             #print(bite)
             id = getImageFileID()
@@ -33,5 +37,32 @@ def home():
                 file.close()
             #imageList = getPhotos()
             #imLen = int(len(imageList))
+<<<<<<< HEAD
             #return render_template('upload.html', boolean=False, imList= imageList)
     return render_template('account.html', boolean=False)
+=======
+            return 0
+        return -1
+
+def descUpload(token,username):
+    if (request.get_data()) != 0 and token != -1:
+        #print(request.form)
+        #print(request.files)
+        #print(request.get_data())
+        # splitter = (request.get_data().split(b'name=\"Content-Disposition\"'))[0][:-2]
+        # print("SPLITTER:" + splitter.decode(),flush=True)
+        bite = (request.get_data().split(b'name=\"description\"'))
+        print('SPLIT 1:')
+        print(bite)
+        bite = bite[1].split(b'------')
+        print('SPLIT 2:')
+        print(bite,flush=True)
+        bite = bite[0][4:-2]
+        print('SPLIT 3:')
+        print(bite,flush=True)
+        insertDesc(bite.decode(),username)
+        #imageList = getPhotos()
+        #imLen = int(len(imageList))
+        return 0
+    return -1
+>>>>>>> 1b6075401ea5d822da26017523d2e831254909a7

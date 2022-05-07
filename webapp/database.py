@@ -69,6 +69,7 @@ def create_user_in_db(email, username, hashedpw, salt, login, profpic, websocket
   userDict["id"] = get_next_id()
   users_collection.insert_one(userDict)
   userDict.pop("_id")
+  return userDict["id"]
 
 def list_all():
   users_collection = mongo_client.db["users_collection"]
