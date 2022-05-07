@@ -7,10 +7,19 @@
             <input id="form-file" type="file" name="upload">
             <input type="submit" value="Post">
     </form>
-    
-    <!-- {%for i in imList %}
-        <img src='static/images/{{ i }}' class = "uploaded-images">
-    {%  endfor %} -->
+
+    <form style="text-align: center" id="image-form" method="post" enctype="multipart/form-data" >
+
+
+        <h2>   <label for="form-file">Add Description: </label>  </h2>
+        <textarea  id="description" name="description" rows="2" cols="50"></textarea>
+        <input type="submit" value="Post">
+    </form>
+
+
+    {#    <!-- {%for i in imList %}#}
+{#        <img src='static/images/{{ i }}' class = "uploaded-images">#}
+{#    {%  endfor %} -->#}
     
     
     
