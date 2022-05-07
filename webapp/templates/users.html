@@ -1,14 +1,18 @@
 {% extends "base.html" %} {% block title %}Users{% endblock %} {% block
 content%}
+
+<script src="../static/state.js"></script>
+
 <div class="users">
    <form action="{{ url_for('users.handleMessageForm') }}" method="post">
-      <div class="messageWindow">
+      <div class="messageWindow" id = 'messageWindow'>
          <div class="messageWindow_top">
             <div class="messageWindow_top_exitButton">
                <img
                   class="messageWindow_top_exitButton_svg"
                   src="../static/assets/xmark-solid.svg"
                   alt="X"
+                  onclick="closeMessages()"
                />
             </div>
             <h2 class="messageWindow_top_title">Messages</h2>
@@ -56,6 +60,9 @@ content%}
                src="{{user['profilePic']}}"
                alt="avatar"
             />
+            <div class="onlineDiv">
+               <div class="onlineStatus_on"></div>
+            </div>
          </div>
          <div class="userCard_main">
             <div class="userCard_top">
@@ -64,7 +71,7 @@ content%}
             <div class="userCard_description">{{user['description']}}</div>
          </div>
          <div class="userCard_buttons">
-            <div class="svg_div">
+            <div class="svg_div" onclick="handleOpen()">
                <img
                   src="../static/assets/message-solid.svg"
                   class="userCard_buttons_svg"

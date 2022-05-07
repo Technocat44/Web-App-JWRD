@@ -197,6 +197,18 @@ def add_message(user1, user2, message):
     appender = {"$push":{"messages": {"user": user1, "message": message}}}
     message_collections.update_one(query, appender)
 
+def fetch_messages(id1, id2):
+  col = mongo_client.db["messages_collections"]
+  case1 = col.find_one({'id1': id1, 'id2':id2})
+  case2 = col.find_one({'id1': id2, 'id2':id1})
+  if case1:
+    return case1['massages']
+  elif case2:
+    return case2['massages']
+  else:
+    col.insert_one({'id1': id1, 'id2': id2, 'messages': []})
+    return []
+
 def list_messages(user1, user2):
   messages = mongo_client.db['messages_collections'].find_one({"users": {"$all": [user1, user2]}})
   found = []

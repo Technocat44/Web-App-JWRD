@@ -281,15 +281,35 @@ input[type="email"] {
   /* margin-top: 8px; */
 }
 
+.userCard_top {
+  width: 100%;
+}
+
+.onlineDiv {
+  margin-top: 60%;
+  margin-left: -20%;
+}
+
+.onlineStatus_on {
+  width: 20px;
+  height: 20px;
+  background-color: rgb(9, 234, 9);
+  border-radius: 100%;
+  bottom: 100px;
+}
+
 .userCard_top_name {
   font-weight: bold;
   margin-left: 4px;
   margin-top: 2px;
   font-size: 18px;
+  /* height: 20%; */
+  width: 100%;
 }
 
 .userCard_description {
   width: 100%;
+  height: 100%;
   margin-left: 4px;
 }
 
@@ -303,7 +323,7 @@ input[type="email"] {
   bottom: 0;
   border-radius: 20px;
   z-index: 50;
-  display: flex;
+  display: None;
   flex-direction: column;
 }
 
