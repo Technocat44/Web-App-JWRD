@@ -49,6 +49,11 @@ def get_next_id():
     users_id_collection.insert_one({"last_id": 1})
     return 1
 
+def get_all_users():
+  users_collection = mongo_client.db["users_collection"]
+  usersData = users_collection.find()
+  return usersData
+
 def set_user_login_to_true(username, bool):
   users_collection = mongo_client.db["users_collection"]
   users_collection.find_one_and_update({"username":username}, {"$set": {"login": bool}})
@@ -199,7 +204,7 @@ def list_messages(user1, user2):
     return None
   for x in messages["messages"]:
     found.append(x)
-  print(found)
+  # print(found)
   if len(found) == 0:
     return []
   else:

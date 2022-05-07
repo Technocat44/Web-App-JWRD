@@ -1,52 +1,67 @@
 {% extends "base.html" %} {% block title %}Login{% endblock %} {% block
 content%}
 <div class="users">
-   <div class="messageWindow">
-      <div class="messageWindow_top">
-         <div class="messageWindow_top_exitButton">
-            <img
-               class="messageWindow_top_exitButton_svg"
-               src="../static/assets/xmark-solid.svg"
-               alt="X"
-            />
+   <form action="{{ url_for('users.handleMessageForm') }}" method="post">
+      <div class="messageWindow">
+         <div class="messageWindow_top">
+            <div class="messageWindow_top_exitButton">
+               <img
+                  class="messageWindow_top_exitButton_svg"
+                  src="../static/assets/xmark-solid.svg"
+                  alt="X"
+               />
+            </div>
+            <h2 class="messageWindow_top_title">Messages</h2>
          </div>
-         <h2 class="messageWindow_top_title">Messages</h2>
-      </div>
-      <div class="messageWindow_messages">
-         <ul class="messageWindow_messages_list">
-            <li class="messageWindow_messages_instance">message</li>
-         </ul>
-      </div>
-      <div class="messageWindow_bottom">
-         <div class="messageWindow_bottom_inputDiv">
-            <input
-               type="text"
-               class="messageWindow_bottom_input"
-               id="receiver"
-               name="receiver"
-               placeholder="Enter message"
-            />
+         <div class="messageWindow_messages">
+            <ul class="messageWindow_messages_list">
+               {% if msgs != None %}
+               {%for i in msgs %}
+                  <li class="messageWindow_messages_instance"><span class="bold">{{i['user']}}: </span>{{i['message']}}</li>
+               {%endfor%}
+               {% endif %}
+            </ul>
          </div>
-         <button class="messageWindow_bottom_submit">
-            <img src="../static/assets/arrow-right-solid.svg" class="messageWindow_bottom_submit_svg" alt="Send">
-         </button>
+         <div class="messageWindow_bottom">
+            <div class="messageWindow_bottom_inputDiv">
+               <input
+                  type="text"
+                  class="messageWindow_bottom_input"
+                  id="inputSend"
+                  name="inputSend"
+                  placeholder="Enter message"
+               />
+            </div>
+            <div class="messageWindow_bottom_submitDiv">
+               <button class="messageWindow_bottom_submit">
+                  <img
+                     src="../static/assets/arrow-right-solid.svg"
+                     class="messageWindow_bottom_submit_svg"
+                     alt="Send"
+                  />
+               </button>
+            </div>
+         </div>
       </div>
-   </div>
+   </form>
+
    <h1 class="users_header">Users</h1>
+
    <div class="users_container">
-      <div class="userCard">
+      {%for user in users %}
+      <div class="userCard" id="{{user['id']}}">
          <div class="userCard_avatar">
             <img
                class="userCard_avatar_image"
-               src="../static/assets/jesseGif.gif"
+               src="{{user['profilePic']}}"
                alt="avatar"
             />
          </div>
          <div class="userCard_main">
             <div class="userCard_top">
-               <div class="userCard_top_name">Jesse Hartloff</div>
+               <div class="userCard_top_name">{{user['username']}}</div>
             </div>
-            <div class="userCard_description">Description</div>
+            <div class="userCard_description">{{user['description']}}</div>
          </div>
          <div class="userCard_buttons">
             <div class="svg_div">
@@ -58,56 +73,7 @@ content%}
             </div>
          </div>
       </div>
-
-      <div class="userCard">
-         <div class="userCard_avatar">
-            <img
-               class="userCard_avatar_image"
-               src="../static/assets/jesseGif.gif"
-               alt="avatar"
-            />
-         </div>
-         <div class="userCard_main">
-            <div class="userCard_top">
-               <div class="userCard_top_name">Jesse Hartloff</div>
-            </div>
-            <div class="userCard_description">Description</div>
-         </div>
-         <div class="userCard_buttons">
-            <div class="svg_div">
-               <img
-                  src="../static/assets/message-solid.svg"
-                  class="userCard_buttons_svg"
-                  alt=""
-               />
-            </div>
-         </div>
-      </div>
-
-      <div class="userCard">
-         <div class="userCard_avatar">
-            <img
-               class="userCard_avatar_image"
-               src="../static/assets/jesseGif.gif"
-               alt="avatar"
-            />
-         </div>
-         <div class="userCard_main">
-            <div class="userCard_top">
-               <div class="userCard_top_name">Jesse Hartloff</div>
-            </div>
-            <div class="userCard_description">Description</div>
-         </div>
-         <div class="userCard_buttons">
-            <div class="svg_div" onclick="">
-               <img
-                  src="../static/assets/message-solid.svg"
-                  class="userCard_buttons_svg"
-                  alt=""
-               />
-            </div>
-         </div>
-      </div>
+      {%endfor%}
    </div>
 </div>
 {% endblock %}

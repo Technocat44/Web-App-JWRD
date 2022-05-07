@@ -43,6 +43,7 @@ body {
   display: flex;
   justify-content: center;
   background-color: #353535;
+  /* padding-left: 20px; */
 }
 
 .home_link {
@@ -366,14 +367,44 @@ input[type="email"] {
   border-radius: 15px;
   /* background-color: #5b5a5a; */
   border: 0px;
+  margin-left: 2.5px;
+}
+
+.messageWindow_messages_instance {
+  list-style-type: none;
+  margin-bottom: 3px;
+}
+
+.bold {
+  font-size: large;
+}
+
+.messageWindow_messages_list {
+  width: 100%;
+  padding: 0px;
+  height: 100%;
+  overflow: auto;
+  margin: 0px;
+  padding: 10px 0;
 }
 
 .messageWindow_bottom_submit {
-  width: 30px;
+  width: 100%;
+  height: 100%;
   background-color: #5865F2;
   border: 0px;
-  border-radius: 20px;
+  border-radius: 10px;
   padding: 0px;
+}
+
+.messageWindow_bottom_submitDiv {
+  width: 35px;
+  height: 35px;
+  margin: auto;
+  margin-left: 5px;
+  margin-right: 0;
+  display: flex;
+  align-items: center;
 }
 
 .messageWindow_bottom_submit_svg {
