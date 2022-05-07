@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, session
 # from webapp.auth import user_session
 import hashlib
 
@@ -36,5 +36,6 @@ def home():
     userVerifiedFromDatabase = get_user_collection_via_auth_token(auth_token_cookie)
     print("/home this is the hashed auth token form the database", userVerifiedFromDatabase)
     if userVerifiedFromDatabase:
+        session['id'] = userVerifiedFromDatabase['id']
         return render_template("home.html", user=userVerifiedFromDatabase["username"])
     return render_template("home.html", user=None)
