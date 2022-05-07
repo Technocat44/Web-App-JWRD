@@ -65,7 +65,7 @@ def set_user_login_to_true(username, bool):
 """
 def create_user_in_db(email, username, hashedpw, salt, login, profpic):
   users_collection = mongo_client.db["users_collection"]
-  userDict = {"email":email, "username":username, "password":hashedpw,"salt":salt, "login":login, "profilePic": profpic}
+  userDict = {"email":email, "username":username, "password":hashedpw,"salt":salt, "login":login, "profilePic": profpic,"description":None}
   userDict["id"] = get_next_id()
   users_collection.insert_one(userDict)
   userDict.pop("_id")
@@ -220,3 +220,19 @@ def insertProfilePic(imageID,user):
       print('switched',flush = True)
   #mongo_client.db.drop_collection("paths")
   return True
+
+def insertDesc(desc,user):
+  users_collection = mongo_client.db["users_collection"]
+  print(user['username'],flush = True)
+  for users in users_collection.find():
+    if users['username'] == user['username']:
+      users_collection.update_one(users,{'$set' : { "description" : desc}})
+      print('switched',flush = True)
+  #mongo_client.db.drop_collection("paths")
+  return True
+
+
+  # def getProfilePic(user):
+  #   users_collection = mongo_client.db["users_collection"]
+  #   for users in users_collection.find():
+  #     if()
