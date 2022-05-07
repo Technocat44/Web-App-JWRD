@@ -1,3 +1,4 @@
+import json
 from flask import Blueprint, render_template,request, flash, session, blueprints
 from webapp.database import get_all_users
 import time 
@@ -38,7 +39,7 @@ def usersHandler():
 
 @usersGiver.route('/allUsers')
 def allUsers():
-    users = get_all_users()
+    users = get_all_users() 
     toSend = []
     for user in users:
         print("what are the users", user)
@@ -50,3 +51,8 @@ def allUsers():
 @usersGiver.route('/handleMessage', methods = ["POST"])
 def handleMessageForm():
     return
+
+@usersGiver.route('/fetchMessages')
+def fetchMessages():
+    # print('abcd')
+    return json.dumps({'1':2})
