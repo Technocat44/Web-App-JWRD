@@ -16,7 +16,7 @@ print("U " ,USERNAME)
 print("P "  ,PASSWORD)
 print("D ", DATABASE) 
 
-
+sock = Sock()
 
 def create_app():
     # __name__ is the name of the current Python module. 
@@ -29,11 +29,10 @@ def create_app():
     app.config["MONGO_URI"] = f"mongodb+srv://{USERNAME}:{PASSWORD}@clusterjwrd.49opx.mongodb.net/{DATABASE}?retryWrites=true&w=majority"
     from .database import mongo_client
     mongo_client.init_app(app)
-    app.config['SOCK_SERVER_OPTIONS'] = {'ping_interval': 180}
-    Sock.init_app(app)
    # from .models import login_manager
     # login_manager.init_app(app)
- 
+  
+    sock.init_app(app)
     return app
 
 
