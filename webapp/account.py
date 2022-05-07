@@ -18,7 +18,7 @@ def home():
     username = get_user_collection_via_auth_token(token)
     print(request.get_data(),flush=True)
     if request.get_data().__contains__(b'filename'):
-         imageUpload(token,username)
+        imageUpload(token,username)
     if request.get_data().__contains__(b'description'):
         descUpload(token,username)
     return render_template('account.html', boolean=False)
@@ -32,9 +32,8 @@ def imageUpload(token,username):
             #print(request.form)
             #print(request.files)
             #print(request.get_data())
-            # test
             bite = (request.get_data().split(b'image/jpeg'))
-            bite = bite[1].split(b'-------')
+            bite = bite[1].split(b'------')
             bite = bite[0][4:-2]
             #print(bite)
             id = getImageFileID()
@@ -57,7 +56,7 @@ def descUpload(token,username):
         bite = (request.get_data().split(b'name=\"description\"'))
         print('SPLIT 1:')
         print(bite)
-        bite = bite[1].split(b'----------')
+        bite = bite[1].split(b'------')
         print('SPLIT 2:')
         print(bite,flush=True)
         bite = bite[0][4:-2]
