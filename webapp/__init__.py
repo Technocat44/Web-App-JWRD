@@ -1,7 +1,9 @@
 from flask import Flask
 #from flask_pymongo import PyMongo
 from dotenv import load_dotenv
+from flask_sock import Sock
 import os
+
 
 
 
@@ -27,6 +29,8 @@ def create_app():
     app.config["MONGO_URI"] = f"mongodb+srv://{USERNAME}:{PASSWORD}@clusterjwrd.49opx.mongodb.net/{DATABASE}?retryWrites=true&w=majority"
     from .database import mongo_client
     mongo_client.init_app(app)
+    app.config['SOCK_SERVER_OPTIONS'] = {'ping_interval': 180}
+    Sock.init_app(app)
    # from .models import login_manager
     # login_manager.init_app(app)
  
