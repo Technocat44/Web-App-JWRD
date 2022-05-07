@@ -244,8 +244,9 @@ def sign_up():
                     hash = bcrypt.hashpw(passwordOne.encode(), salt)
                     login = False
                     profpic = None
+                    websocketConnect = None
                     print("this is the hashed salted password: ", hash)
-                    id = create_user_in_db(email, username, hash, salt, login, profpic)
+                    id = create_user_in_db(email, username, hash, salt, login, profpic, websocketConnect)
                     session['id'] = id
                     
                     
