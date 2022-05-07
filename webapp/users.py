@@ -1,8 +1,19 @@
 from flask import Blueprint, render_template,request, flash, session, blueprints
 from webapp.database import get_all_users
-
+import time 
+import json
 
 usersGiver = Blueprint("users", __name__)
+
+activeWebSocketConnections = []
+
+@usersGiver.route("/ws")
+def sock(ws):
+  while True:
+      activeWebSocketConnections.append()
+      data = ws.receive()
+      ws.send(data)
+      # time.sleep(.10)
 
 @usersGiver.route('/users')
 def usersHandler():
@@ -30,8 +41,10 @@ def allUsers():
     users = get_all_users()
     toSend = []
     for user in users:
+        print("what are the users", user)
         if user.get('login') == True:
             toSend.append(user)
+    toSend = json.dumps(toSend)
     return toSend
 
 @usersGiver.route('/handleMessage', methods = ["POST"])

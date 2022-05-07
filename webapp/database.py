@@ -51,7 +51,7 @@ def get_next_id():
 
 def get_all_users():
   users_collection = mongo_client.db["users_collection"]
-  usersData = users_collection.find()
+  usersData = users_collection.find({}, {"_id":0, "password":0,"salt":0})
   return usersData
 
 def set_user_login_to_true(username, bool):
@@ -63,9 +63,9 @@ def set_user_login_to_true(username, bool):
   {"username": "jamesaqu", "email": "jamesaqu@buffalo.edu",  "password": "$2js7fng84n7ab7fb949",
    "id": Number, "auth_token": will be blank at sign up }
 """
-def create_user_in_db(email, username, hashedpw, salt, login, profpic):
+def create_user_in_db(email, username, hashedpw, salt, login, profpic, websocketConn):
   users_collection = mongo_client.db["users_collection"]
-  userDict = {"email":email, "username":username, "password":hashedpw,"salt":salt, "login":login, "profilePic": profpic,"description":None}
+  userDict = {"email":email, "username":username, "password":hashedpw,"salt":salt, "login":login, "profilePic": profpic,"description":None, "websocketActive": websocketConn}
   userDict["id"] = get_next_id()
   users_collection.insert_one(userDict)
   userDict.pop("_id")
@@ -212,11 +212,11 @@ def list_messages(user1, user2):
 
 def insertProfilePic(imageID,user):
   users_collection = mongo_client.db["users_collection"]
-  photoData = {'path': 'image-' + str(imageID) + '.jpg'}
+  #photoData = {'path': 'image-' + str(imageID) + '.jpg'}
   print(user['username'],flush = True)
   for users in users_collection.find():
     if users['username'] == user['username']:
-      users_collection.update_one(users,{'$set' : { "profile_pic" : photoData}})
+      users_collection.update_one(users,{'$set' : { "profile_pic" : 'image-' + str(imageID) + '.jpg'}})
       print('switched',flush = True)
   #mongo_client.db.drop_collection("paths")
   return True

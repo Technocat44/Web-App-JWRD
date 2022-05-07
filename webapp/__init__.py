@@ -36,3 +36,8 @@ def create_app():
     return app
 
 
+@sock.route("/ws")
+def socker(ws):
+  while True:
+      data = ws.receive()
+      ws.send(data)

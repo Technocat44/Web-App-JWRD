@@ -1,26 +1,28 @@
 const socket = new WebSocket("ws://" + location.host + "/ws");
+console.log("this is the ancestorOrigins" , location.ancestorOrigins);
+console.log("this is the host" , location.host);
+console.log("this is the hostname" , location.hostname);
+console.log("this is the origins" , location.origin);
+console.log("this is the port" , location.port);
+
 console.log("this is establishing a websocket", socket)
-let activeUsers = [];
-let inactiveUsers = [];
 
 // the socket event  
 socket.onopen = function() {
   alert("[open] Connection established");
   alert("Sending to server");
   // this will create a list of active and inactive users
-  getAllUsers(); 
-  for (const user in activeUsers){
+  listOfActiveUsers = getAllUsers(); 
+  console.log("these are all the active users", listOfActiveUsers)
+  for (const user in listOfActiveUsers){
     const idFromObj = user["id"];
     const htmlUserId = document.getElementById(idFromObj);
-    
+    console.log("this is teh id from the obj", idFromObj)
+    console.log("this is the active user", user)
     // make the user active dot green
+    
+  }
 
-  }
-  for (const user in inactiveUsers){
-    const idFromObj = user["id"];
-    const htmlUserId = document.getElementById(idFromObj);
-    // make a loop to make the user active dot red    
-  }
   
   // socket.send()
 }
@@ -33,21 +35,22 @@ socket.onopen = function() {
 // 2. check if the user is active, create a list of active users
 // 3. if they are not active       create a list of inactive users
 function getAllUsers() {
+  activeList = []
   const request = new XMLHttpRequest();
   request.onreadystatechange = function () {
     if (this.readyState === 4 && this.status === 200) {
       const allusers = JSON.parse(this.response);
       for (const user of allusers) {
-        if (user["active"] == True) {
-          activeUsers.push(user);
-        } else {
-          inactiveUsers.push(user);
-        }
+        console.log("inside getAllUsers this is the user", user);
+        activeList.push(user);
+
       }
+      
     }
   };
   request.open("GET", "/allUsers");
   request.send();
+  return activeList;
 }
   
 // Now after getAllUsers() we have a list of all active and inactive users
