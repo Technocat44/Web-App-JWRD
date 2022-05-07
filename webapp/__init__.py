@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from flask_sock import Sock
 import os
 
-
+import json
 
 
 load_dotenv(".flaskenv")
@@ -40,4 +40,6 @@ def create_app():
 def socker(ws):
   while True:
       data = ws.receive()
+      print("this is annoying", data)
+      print('this is the ws , ',ws)
       ws.send(data)

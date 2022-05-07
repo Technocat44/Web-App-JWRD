@@ -42,7 +42,7 @@ def allUsers():
     users = get_all_users() 
     toSend = []
     for user in users:
-        print("what are the users", user)
+        # print("what are the users", user)
         if user.get('login') == True:
             toSend.append(user)
     toSend = json.dumps(toSend)

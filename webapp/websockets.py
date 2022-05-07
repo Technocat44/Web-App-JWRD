@@ -8,7 +8,7 @@ websocker = Blueprint('websockets', __name__)
 @websocker.route("/ws")
 def sock(ws):
   while True:
-      print("This is the ws data from inside websocket.py", ws)
       data = ws.receive()
+      print("this is the data",data, flush=True)
       ws.send(data)
       

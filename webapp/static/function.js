@@ -12,6 +12,7 @@ console.log("this is establishing a websocket", socket)
 socket.onopen = function() {
   alert("[open] Connection established");
   alert("Sending to server");
+  socket.send("Testinggggggg")
   // this will create a list of active and inactive users
   listOfActiveUsers = getAllUsers(); 
   console.log("these are all the active users", listOfActiveUsers)
@@ -25,11 +26,14 @@ socket.onopen = function() {
   }
 
   
-  socket.send(listOfActiveUsers)
+  
 }
 
 
-
+function sendToServer(user){
+  socket.send("Sending some stuff");
+  socket.send(JSON.stringify(user));
+}
 
 // want to write a function that gets all the users from the database
 // 1. we need to get all users
@@ -41,17 +45,17 @@ function getAllUsers() {
   request.onreadystatechange = function () {
     if (this.readyState === 4 && this.status === 200) {
       const allusers = JSON.parse(this.response);
-      for (const user of allusers) {
-        console.log("inside getAllUsers this is the user", user);
-        activeList.push(user);
-
+      console.log("all the users",allusers)
+      for (users in allusers){
+        sendToServer(users)
       }
-      
     }
   };
+  console.log("THIS is the active list",activeList)
   request.open("GET", "/allUsers");
   request.send();
-  return activeList;
+ 
+
 }
   
 // Now after getAllUsers() we have a list of all active and inactive users
