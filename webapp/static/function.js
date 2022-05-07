@@ -4,7 +4,6 @@ console.log("this is the host" , location.host);
 console.log("this is the hostname" , location.hostname);
 console.log("this is the origins" , location.origin);
 console.log("this is the port" , location.port);
-console.log("this is " , )
 
 console.log("this is establishing a websocket", socket)
 
