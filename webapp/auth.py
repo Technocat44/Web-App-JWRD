@@ -1,5 +1,5 @@
 # from nis import cat
-from flask import Blueprint, make_response, redirect, render_template, request, flash, session, url_for
+from flask import Blueprint, make_response, redirect, render_template, request, flash, url_for
 from webapp.database import add_auth_token_to_users_collection, check_if_user_exist_on_signup, create_user_in_db, list_all, retrieve_hashed_auth_token_from_db, retrieve_user\
     ,add_auth_token_to_users_collection, set_user_login_to_true, get_user_collection_via_auth_token, update_auth_token_to_None ,update_login_to_False\
         ,update_auth_token_to_None
@@ -112,7 +112,7 @@ def login():
                 # from webapp.database import add_user_session_to_db
                 # add_user_session_to_db(user_session.get_username(), user_session.get_login())
                 resp = make_response(render_template("home.html", boolean=True, user=userFromDB["username"])) # make a response variable
-                resp.set_cookie("auth_token", new_auth_token, max_age=7200, httponly=True) # set the unhashed auth token in the cookie
+                resp.set_cookie("auth_token", new_auth_token, max_age=7200) # set the unhashed auth token in the cookie
         
 
               
@@ -246,10 +246,9 @@ def sign_up():
                     profpic = None
                     websocketConnect = None
                     print("this is the hashed salted password: ", hash)
-                    id = create_user_in_db(email, username, hash, salt, login, profpic, websocketConnect)
-                    session['id'] = id
+                    create_user_in_db(email, username, hash, salt, login, profpic, websocketConnect)
                     
-                    
+                      
                     # session["username"] = username
                     flash("Account created", category='success')
                     return redirect(url_for('views.home'))
@@ -277,7 +276,7 @@ To authenticate users, Flask-Login requires you implement a handful special meth
 The following table lists the required methods:
 Method	            Description
 is_authenticated()	returns True if user is authenticated (i.e logged in). Otherwise False.
-is_active()	        returns True if account is not suspended. Otherwise False.
+is_active()	        returns Tre if account is not suspended. Otherwise False.
 is_anonymous()	    returns True for anonymous users (i.e users who are not logged in). Otherwise False.
 get_id()	        returns a unique identifier for the User object.
 """

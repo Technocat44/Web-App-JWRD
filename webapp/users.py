@@ -1,6 +1,7 @@
+from crypt import methods
 import json
 from flask import Blueprint, render_template,request, flash, session, blueprints
-from webapp.database import get_all_users, fetch_messages
+from webapp.database import get_all_users, fetch_messages, get_user_collection_via_auth_token
 import time 
 import json
 
@@ -42,11 +43,24 @@ def allUsers():
     users = get_all_users() 
     toSend = []
     for user in users:
-        # print("what are the users", user)
+     #   print("what are the users", user)
         if user.get('login') == True:
             toSend.append(user)
     toSend = json.dumps(toSend)
     return toSend
+  
+# I need to write a function that identifies the current user by checking their auth token
+# this function is used by the function.js file and returns a user
+@usersGiver.route('/singleUser', methods = ["POST"])
+def singleUser():
+    auth_token = request.get_json()
+    print("this is that data", auth_token)
+    #auth_token = json.loads(data)
+    print("the auth_token in /singleUser users.py", auth_token)
+    userCollection = get_user_collection_via_auth_token(auth_token)
+    user = userCollection["username"]
+    user = json.dumps(user)
+    return user
 
 @usersGiver.route('/handleMessage', methods = ["POST"])
 def handleMessageForm():

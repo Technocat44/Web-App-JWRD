@@ -18,6 +18,8 @@ print("D ", DATABASE)
 
 sock = Sock()
 
+websocket_connections = []
+
 def create_app():
     # __name__ is the name of the current Python module. 
     # The app needs to know where it’s located to set up some paths, and __name__ is a convenient way to tell it that.
@@ -40,6 +42,17 @@ def create_app():
 def socker(ws):
   while True:
       data = ws.receive()
-      print("this is annoying", data)
-      print('this is the ws , ',ws)
-      ws.send(data)
+      print("this is the data sent from functions.js websocket = ", data)
+      print("\n")
+      print('this is the ws connection = ' ,ws)
+
+      # I need to set the key of "websocket" of all the users I receive from null to True
+      # the current ws object I receive is tied to a specific user who connected. 
+      # I need to get the "id" element from each user on the users page to then match it
+      # with the id from the 
+
+      """
+      How can I match a websocket connection to specific user?
+      We are going to need to add a current user to the users page so we can match the 
+      """
+      # ws.send(data)
