@@ -1,20 +1,12 @@
 const socket = new WebSocket("ws://" + location.host + "/ws");
-console.log("this is the ancestorOrigins" , location.ancestorOrigins);
-console.log("this is the host" , location.host);
-console.log("this is the hostname" , location.hostname);
-console.log("this is the origins" , location.origin);
-console.log("this is the port" , location.port);
 
 console.log("this is establishing a websocket", socket)
 
 // the socket event  
 socket.onopen = function() {
   alert("[open] Connection established");
-  alert("Sending to server");
-  socket.send("Testinggggggg")
   // this will create a list of active and inactive users
-  listOfActiveUsers = getAllUsers(); 
-  console.log("these are all the active users", listOfActiveUsers)
+  getAllUsers(); 
   for (const user in listOfActiveUsers){
     const idFromObj = user["id"];
     const htmlUserId = document.getElementById(idFromObj);
@@ -22,13 +14,8 @@ socket.onopen = function() {
     console.log("this is the active user", user)
     // make the user active dot green
     
-  }
-
-  
-  
+  } 
 }
-
-
 function sendToServer(user){
   socket.send("Sending some stuff");
   socket.send(JSON.stringify(user));
@@ -39,18 +26,17 @@ function sendToServer(user){
 // 2. check if the user is active, create a list of active users
 // 3. if they are not active       create a list of inactive users
 function getAllUsers() {
-  activeList = []
   const request = new XMLHttpRequest();
   request.onreadystatechange = function () {
     if (this.readyState === 4 && this.status === 200) {
       const allusers = JSON.parse(this.response);
       console.log("all the users",allusers)
-      for (users in allusers){
-        sendToServer(users)
+      for (const users in allusers){
+        console.log("these are the users", users);
+        sendToServer(users);
       }
     }
   };
-  console.log("THIS is the active list",activeList)
   request.open("GET", "/allUsers");
   request.send();
  
