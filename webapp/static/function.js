@@ -11,8 +11,6 @@ socket.onopen = function() {
   getAllUsers(); 
 
     // make the user active dot green
-    
-  
 }
 
 function getSingleUser() {
@@ -21,7 +19,6 @@ function getSingleUser() {
     if (this.readyState === 4 && this.status === 200) {
       const username = JSON.parse(this.response);
       console.log("this is the single user",username)
-
     }
   };
   // grab the auth_cookie from the current user
@@ -29,9 +26,12 @@ function getSingleUser() {
   // send tp the single user path with the auth token from the current user
   const auth_cookie = getCookie();
   console.log("AUTH COOKIE >>>" , auth_cookie)
-  request.open('POST', '/singleUser');
-  request.setRequestHeader("Content-Type", "application/json");
-  request.send(JSON.stringify(auth_cookie));
+  if (auth_cookie != "") {
+    request.open('POST', '/singleUser');
+    request.setRequestHeader("Content-Type", "application/json");
+    request.send(JSON.stringify(auth_cookie));
+  }
+  
 }
 
 function sendToServer(user){

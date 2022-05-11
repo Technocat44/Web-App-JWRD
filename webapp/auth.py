@@ -145,7 +145,7 @@ def logout():
     auth_token_cookie = request.cookies.get("auth_token", -1)
     # hash it so I can search for it in the database
     
-    if auth_token_cookie == False:
+    if auth_token_cookie == -1:
         return render_template("home.html", user=None)
     userVerifiedFromDatabase = get_user_collection_via_auth_token(auth_token_cookie)
     print(userVerifiedFromDatabase, flush =True)

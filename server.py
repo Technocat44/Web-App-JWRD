@@ -16,7 +16,7 @@ app.register_blueprint(upload.uploader, url_prefix='/')
 # app.register_blueprint(messages.messager, url_prefix='/')
 app.register_blueprint(users.usersGiver, url_prefix='/')
 app.register_blueprint(account.accounter, url_prefix='/')
-app.register_blueprint(websockets.websocker, url_prefix='/')
+# app.register_blueprint(websockets.websocker, url_prefix='/')
 
 if __name__ == '__main__':
     # having debug set to True is important. The server will reload itself if the code change instead of having to do it
