@@ -15,12 +15,13 @@ incoming request URL to the view that should handle it. The view returns data th
 @accounter.route('/account', methods=['GET', 'POST'])
 def home():
     token = request.cookies.get('auth_token',-1)
-    username = get_user_collection_via_auth_token(token)
-    print(request.get_data(),flush=True)
-    if request.get_data().__contains__(b'filename'):
-        imageUpload(token,username)
-    if request.get_data().__contains__(b'description'):
-        descUpload(token,username)
+    if token != -1:
+        username = get_user_collection_via_auth_token(token)
+        print(request.get_data(),flush=True)
+        if request.get_data().__contains__(b'filename'):
+            imageUpload(token,username)
+        if request.get_data().__contains__(b'description'):
+            descUpload(token,username)
     return render_template('account.html', boolean=False)
 
 

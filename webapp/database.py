@@ -65,7 +65,7 @@ def set_user_login_to_true(username, bool):
 """
 def create_user_in_db(email, username, hashedpw, salt, login, profpic, websocketConn):
   users_collection = mongo_client.db["users_collection"]
-  userDict = {"email":email, "username":username, "password":hashedpw,"salt":salt, "login":login, "profilePic": profpic,"description":None, "websocketActive": websocketConn}
+  userDict = {"email":email, "username":username, "password":hashedpw,"salt":salt, "login":login, "profilePic": profpic,"description":"", "websocketActive": websocketConn}
   userDict["id"] = get_next_id()
   users_collection.insert_one(userDict)
   userDict.pop("_id")
