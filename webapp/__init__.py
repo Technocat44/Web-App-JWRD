@@ -19,6 +19,7 @@ sock = Sock()
 
 websocket_connections = []
 websocket_connections_dict= {}
+username_websocket_collection_dict = {}
 
 def create_app():
     # __name__ is the name of the current Python module. 
@@ -41,6 +42,8 @@ def create_app():
 
 @sock.route("/ws")
 def socker(ws):
+  from webapp.database import fetch_messages, get_user_from_username
+
   currentWebSocketConnection = None
   userFlag = 1
   actualUsername = ""
@@ -60,6 +63,10 @@ def socker(ws):
    #                                       "<simple_websocket.ws.Server object at 0x7fnfdjfdfnei>: "batman"}
 
       print("does data == closing? ", str(data)==str("closing"))
+      if str(data)[:6] == str('update'):
+        pass
+
+
       if str(data) == str("closing"):
         # TODO: write a function that finds the username in the dictionary and sets the userIndex to something other than 1000 
         userFromDict = websocket_connections_dict[str(ws)]
@@ -70,6 +77,9 @@ def socker(ws):
         #     print("do they equal each other? ", currentWebSocketConnection == websocket_connections[users])
         #     if websocket_connections[users] == currentWebSocketConnection:
         #       userIndex = users
+
+
+
       currentWebSocketConnection = str(ws)
       if str(ws) not in websocket_connections_dict.keys():
         # TODO: add the websocket connection:username key value pair to the dict
@@ -78,16 +88,21 @@ def socker(ws):
         print("THE WS CONNECTION IS NOw IN THE DICT")
       if actualUsername not in websocket_connections_dict.values():
         websocket_connections_dict[currentWebSocketConnection] = actualUsername
+        # this adds a username as a key and a websocket connection as a value
+        username_websocket_collection_dict[actualUsername] = currentWebSocketConnection
         
       print('this is the ws connection = ' ,ws)
+
+
       # if ws not in websocket_connections:
       #   websocket_connections.append(ws)        
       if userFlag == 0:
         # TODO: Means the user left the page and needs we need to remove them 
         del websocket_connections_dict[currentWebSocketConnection]
+        del username_websocket_collection_dict[actualUsername]
         #  websocket_connections.pop(userFlag)
- 
-      print("these are the current users after a client leaves the user tab", websocket_connections_dict)
+
+      print("these are the current users after a client leaves the user tab", username_websocket_collection_dict)
 
         
       print("this is the data sent from functions.js websocket = ", data)
@@ -97,7 +112,7 @@ def socker(ws):
       # the current ws object I receive is tied to a specific user who connected. 
       # I need to get the "id" element from each user on the users page to then match it
       # with the id from the 
-      print("these are the current websocket connections: ", websocket_connections_dict)
+      print("these are the current websocket connections: ", username_websocket_collection_dict)
       print("\n")
       """
       How can I match a websocket connection to specific user?
