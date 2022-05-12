@@ -3,6 +3,8 @@ from flask import request
 from flask_pymongo import PyMongo
 import certifi
 import hashlib
+
+from markupsafe import escape_silent
 from webapp.models import user_session
 
 from webapp import auth
@@ -21,7 +23,8 @@ NOTES:
 How to use find_one instead of find
 https://stackoverflow.com/questions/28968660/how-to-convert-a-pymongo-cursor-cursor-into-a-dict
 """
-
+def escape_html(hacker):
+    return hacker.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
 
 #TODO: add user_session to the database, this should happen when a user successfully logs in
 def add_user_session_to_db(user_name, login_key):
@@ -31,6 +34,7 @@ def add_user_session_to_db(user_name, login_key):
     return False
   if login_key == False:
     return False
+  user_name = escape_html(user_name)
   logged_in_doc = {"username": user_name, "login": login_key}
   logged_in_collection.insert_one(logged_in_doc)
   return True
@@ -55,6 +59,7 @@ def get_all_users():
   return usersData
 
 def set_user_login_to_true(username, bool):
+  username = escape_html(username)
   users_collection = mongo_client.db["users_collection"]
   users_collection.find_one_and_update({"username":username}, {"$set": {"login": bool}})
 
@@ -65,6 +70,8 @@ def set_user_login_to_true(username, bool):
 """
 def create_user_in_db(email, username, hashedpw, salt, login, profpic, websocketConn):
   users_collection = mongo_client.db["users_collection"]
+  email = escape_html(email)
+  username = escape_html(username)
   userDict = {"email":email, "username":username, "password":hashedpw,"salt":salt, "login":login, "profilePic": profpic,"description":"", "websocketActive": websocketConn}
   userDict["id"] = get_next_id()
   users_collection.insert_one(userDict)
@@ -81,6 +88,7 @@ def list_all():
 # in the database. This function is only designed to verify if the username exists that is it.
 def check_if_user_exist_on_signup(username) -> bool:
   users_collection = mongo_client.db["users_collection"]
+  username = escape_html(username)
   users = users_collection.find_one({"username":username}, {"username":1, "_id":0}) # this retrieves the user if they exist
   print("this is the user name we found in the database collection : ", users)
   if users: # if the query returned a username matching the sign up return True the username exist
@@ -90,6 +98,7 @@ def check_if_user_exist_on_signup(username) -> bool:
 
 def retrieve_user(username) -> dict:
   users_collection = mongo_client.db["users_collection"]
+  username = escape_html(username)
   userFromDb = users_collection.find_one({"username":username}, {"_id":0}) # retrieve user and ignore _id tag
   if userFromDb:
     return userFromDb
@@ -153,6 +162,7 @@ def verify_auth_token(auth_token_cookie):
 #     return render_template("home.html", user=None)
 
 def find_one(email):
+  email = escape_html(email)
   oneUser = mongo_client.db["users_collection"].find_one({"email": email})
   print("this is in the db file, in find_one functionthe response is: ", oneUser)
   # if the id does not exist, oneUser will equal null / None
@@ -184,6 +194,9 @@ def getPhotos():
   return arr
 
 def add_message(user1, user2, message):
+  user1 = escape_html(user1)
+  user2 = escape_html(user2)
+  message = escape_html(message)
   # find if a collection for these users exist
   temp = mongo_client.db["messages_collections"].find({"users": {"$all": [user1, user2]}})
   found = []
@@ -211,6 +224,8 @@ def fetch_messages(id1, id2):
     return []
 
 def list_messages(user1, user2):
+  user1 = escape_html(user1)
+  user2 = escape_html(user2)
   messages = mongo_client.db['messages_collections'].find_one({"users": {"$all": [user1, user2]}})
   found = []
   if messages == None:
@@ -226,6 +241,7 @@ def list_messages(user1, user2):
 def insertProfilePic(imageID,user):
   users_collection = mongo_client.db["users_collection"]
   #photoData = {'path': 'image-' + str(imageID) + '.jpg'}
+  user = escape_html(user)
   print(user['username'],flush = True)
   for users in users_collection.find():
     if users['username'] == user['username']:
@@ -235,6 +251,8 @@ def insertProfilePic(imageID,user):
   return True
 
 def insertDesc(desc,user):
+  desc = escape_html(desc)
+  user = escape_html(user)
   users_collection = mongo_client.db["users_collection"]
   print(user['username'],flush = True)
   for users in users_collection.find():

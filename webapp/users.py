@@ -8,13 +8,13 @@ usersGiver = Blueprint("users", __name__)
 
 activeWebSocketConnections = []
 
-@usersGiver.route("/ws")
-def sock(ws):
-  while True:
-      activeWebSocketConnections.append()
-      data = ws.receive()
-      ws.send(data)
-      # time.sleep(.10)
+# @usersGiver.route("/ws")
+# def sock(ws):
+#   while True:
+#       activeWebSocketConnections.append()
+#       data = ws.receive()
+#       ws.send(data)
+#       # time.sleep(.10)
 
 @usersGiver.route('/users')
 def usersHandler():
