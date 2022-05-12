@@ -433,3 +433,8 @@ input[type="email"] {
   width: 10px;
   height: 10px;
 }
+
+.socials {
+  height: 40px;
+  width: 40px;
+}
