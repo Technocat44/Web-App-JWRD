@@ -9,6 +9,7 @@ import random
 import bcrypt
 import hashlib
 import string
+import secrets
 # from webapp.models import user_session
 
 # bcrypt = Bcrypt()
@@ -86,7 +87,7 @@ def login():
                     flash("Incorrect password, try again", category='error')
                     return redirect(url_for('auth.login'))
                 #new_auth_token = secrets.token_urlsafe(50)  # need to generate auth tokens
-                new_auth_token = generateAuthtoken()
+                new_auth_token = secrets.token_urlsafe(50)
                 print("this is the auth token : ",new_auth_token)
 
                 hash_of_auth_token_cookie = hashlib.sha256(new_auth_token.encode()).hexdigest()
@@ -247,10 +248,9 @@ def sign_up():
                     salt = bcrypt.gensalt(15)
                     hash = bcrypt.hashpw(passwordOne.encode(), salt)
                     login = False
-                    profpic = None
                     websocketConnect = None
                     print("this is the hashed salted password: ", hash)
-                    userId = create_user_in_db(email, username, hash, salt, login, profpic, websocketConnect)
+                    userId = create_user_in_db(email, username, hash, salt, login, websocketConnect)
                     
                     session['id'] = userId
                     # session["username"] = username
@@ -275,17 +275,17 @@ def sign_up():
         flash("Already logged in", category='error')
     return render_template('sign-up.html')
   
-def generateAuthtoken():
-    Authtoken = ""
-    count = 0
-    while count < 11:
-        Authtoken += random.choice(string.ascii_letters)
-        count += 1
-    hashed = hashlib.sha1(Authtoken.encode('utf-8'))
-    # #print(hashed.hexdigest())
-    enHash = base64.b64encode(hashed.digest())
-    #print(token)
-    return Authtoken
+# def generateAuthtoken():
+#     Authtoken = ""
+#     count = 0
+#     while count < 11:
+#         Authtoken += random.choice(string.ascii_letters)
+#         count += 1
+#     hashed = hashlib.sha1(Authtoken.encode('utf-8'))
+#     # #print(hashed.hexdigest())
+#     enHash = base64.b64encode(hashed.digest())
+#     #print(token)
+#     return Authtoken
 """
 To authenticate users, Flask-Login requires you implement a handful special methods in the User class. 
 The following table lists the required methods:
