@@ -78,11 +78,11 @@ def set_user_login_to_true(username, bool):
   {"username": "jamesaqu", "email": "jamesaqu@buffalo.edu",  "password": "$2js7fng84n7ab7fb949",
    "id": Number, "auth_token": will be blank at sign up }
 """
-def create_user_in_db(email, username, hashedpw, salt, login, websocketConn):
+def create_user_in_db(email, username, hashedpw, salt, login, websocketConn, notification):
   users_collection = mongo_client.db["users_collection"]
   email = escape_html(email)
   username = escape_html(username)
-  userDict = {"email":email, "username":username, "password":hashedpw,"salt":salt, "login":login,"description":"", "websocketActive": websocketConn}
+  userDict = {"email":email, "username":username, "password":hashedpw,"salt":salt, "login":login,"description":"", "websocketActive": websocketConn, "notifications":notification}
   userDict["id"] = get_next_id()
   users_collection.insert_one(userDict)
   userDict.pop("_id")
@@ -126,6 +126,7 @@ def add_auth_token_to_users_collection(hash_auth_token, username):
 # get user_collection from a matching cookie
 def get_user_collection_via_auth_token(auth_token):
   users_collection = mongo_client.db["users_collection"]
+  print("/database this is the unhashed auth token from the users cookies " , auth_token)
   hash_of_auth_token_cookie = hashlib.sha256(auth_token.encode()).hexdigest()
   print("/database hash of auth token cookie", hash_of_auth_token_cookie)
   userVerifiedFromDB = users_collection.find_one({"auth_token":hash_of_auth_token_cookie})

@@ -101,7 +101,7 @@ def login():
                 set_user_login_to_true(userFromDB["username"],True)
                 
 
-                
+                flash("Successfully Logged in!")
                 print("before the user sets anything")
                 
                 # user_session.print_session_state()
@@ -121,9 +121,8 @@ def login():
         
                 session['id'] = userFromDB['id']
               
-                flash("Successfully Logged in!")
+                
                 return resp
-    print("user already has been been logged in /login")
     auth_token_cookie = request.cookies.get("auth_token", -1)
     # hash it so I can search for it in the database
     print("this is the auth_token_cookie in /login", auth_token_cookie)
@@ -177,18 +176,60 @@ def logout():
 
 @auther.route('/sign-up', methods=['GET','POST'])
 def sign_up():
+    username = None
+    if request.method == 'GET':
+      auth_token_check = request.cookies.get("auth_token", -1)
+      if auth_token_check != -1:
+        flash("user has an auth token cookie", category='error')
+                  # if the auth token == auth token from database, they are already logged in
+        print("\n\n")
+        print("/signup-auth this is the auth_token cookie ", auth_token_check)
 
+        auth_token_from_Db = get_user_collection_via_auth_token(auth_token_check)
+        print("/signup-auth this is the auth token from the database", auth_token_from_Db)
+        print("\n\n")
+        if auth_token_from_Db: # if they have an auth token match we enter here
+            # print("this is the user_session variable: ", user_session)
+            # print(user_session.print_session_state())
+            flash("users auth token matches the one in the database", category='error')
+            flash("You are already logged in", category='error') 
+            
+            # print(user_session.get_username(), "this is what get_username returns after I logout")
+            return render_template("sign-up.html", user=username)     
+        flash("auth token cookie they have doesnt match", category='error') 
+      return render_template("sign-up.html")
     #from webapp.database import retrieve_hashed_auth_token_from_db
     # want to change it to check the auth_token 
-    
+    if request.method == 'POST':
     # global user_session
-    username = None
-    auth_token_cookie = request.cookies.get("auth_token", -1)
-    # if they already have an auth token, they dont need to sign up.
-    # if they dont have an auth token (-1) then they have to sign up
-    print("this is the auth_token_cookie: if not logged in, should be -1: ", auth_token_cookie)
-    if auth_token_cookie == -1:
-        if request.method == 'POST':
+     
+      auth_token_cookie = request.cookies.get("auth_token", -1)
+      # if they already have an auth token, they dont need to sign up.
+      # if they dont have an auth token (-1) then they have to sign up
+      print("this is the auth_token_cookie: if not logged in, should be -1: ", auth_token_cookie)
+      if auth_token_cookie != -1:
+          flash("user has an auth token cookie", category='error')
+          # so if they do have an auth token but it doesnt match the one in the database, they can sign up. 
+
+
+          # if the auth token == auth token from database, they are already logged in
+          print("\n\n")
+          print("/signup-auth this is the auth_token cookie ", auth_token_cookie)
+
+          auth_token_from_Db = get_user_collection_via_auth_token(auth_token_cookie)
+          print("/signup-auth this is the auth token from the database", auth_token_from_Db)
+          print("\n\n")
+          if auth_token_from_Db: # if they have an auth token match we enter here
+              # print("this is the user_session variable: ", user_session)
+              # print(user_session.print_session_state())
+              flash("users auth token matches the one in the database", category='error')
+              flash("You are already logged in", category='error')
+              # print(user_session.get_username(), "this is what get_username returns after I logout")
+              return render_template("sign-up.html", user=username)     
+
+
+      else:
+        
             data = request.form
             print(data)
 
@@ -259,31 +300,8 @@ def sign_up():
                     flash("Account created", category='success')
                     return redirect(url_for('views.home'))
 
-    else: 
-        print("the user has an auth token")
-        # so if they do have an auth token but it doesnt match the one in the database, they can sign up. 
-
-
-        # if the auth token == auth token from database, they are already logged in
-        print("\n\n")
-        print("/signup-auth this is the auth_token cookie ", auth_token_cookie)
-
-        auth_token_from_Db = get_user_collection_via_auth_token(auth_token_cookie)
-        print("/signup-auth this is the auth token from the database")
-        print("\n\n")
-        if auth_token_from_Db == auth_token_cookie:
-            # print("this is the user_session variable: ", user_session)
-            # print(user_session.print_session_state())
-            try:
-                flash("You might be logged in already", category='error')
-                # print(user_session.get_username(), "this is what get_username returns after I logout")
-                return render_template("sign-up.html", user=username)        
-
-            except:
-                return render_template("sign-up.html")        
-
-        flash("Already logged in", category='error')
-    return render_template('sign-up.html')
+     
+       
   
 # def generateAuthtoken():
 #     Authtoken = ""
