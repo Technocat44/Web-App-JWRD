@@ -78,7 +78,7 @@ def socker(ws):
         #     if websocket_connections[users] == currentWebSocketConnection:
         #       userIndex = users
 
-
+    
 
       currentWebSocketConnection = str(ws)
       if str(ws) not in websocket_connections_dict.keys():

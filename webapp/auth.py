@@ -249,8 +249,10 @@ def sign_up():
                     hash = bcrypt.hashpw(passwordOne.encode(), salt)
                     login = False
                     websocketConnect = None
+                    notification = None
+
                     print("this is the hashed salted password: ", hash)
-                    userId = create_user_in_db(email, username, hash, salt, login, websocketConnect)
+                    userId = create_user_in_db(email, username, hash, salt, login, websocketConnect, notification)
                     
                     session['id'] = userId
                     # session["username"] = username
@@ -259,9 +261,17 @@ def sign_up():
 
     else: 
         print("the user has an auth token")
-        
+        # so if they do have an auth token but it doesnt match the one in the database, they can sign up. 
+
+
+        # if the auth token == auth token from database, they are already logged in
+        print("\n\n")
+        print("/signup-auth this is the auth_token cookie ", auth_token_cookie)
+
         auth_token_from_Db = get_user_collection_via_auth_token(auth_token_cookie)
-        if auth_token_from_Db:
+        print("/signup-auth this is the auth token from the database")
+        print("\n\n")
+        if auth_token_from_Db == auth_token_cookie:
             # print("this is the user_session variable: ", user_session)
             # print(user_session.print_session_state())
             try:
