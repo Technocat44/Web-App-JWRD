@@ -2,6 +2,11 @@ const socket = new WebSocket("ws://" + location.host + "/ws");
 
 console.log("this is establishing a websocket", socket)
 
+window.onbeforeunload = function () {
+  alert("[leaving page]");
+  socket.send(JSON.stringify("closing"));
+
+}
 // the socket event  
 socket.onopen = function() {
   alert("[open] Connection established");
@@ -19,6 +24,8 @@ function getSingleUser() {
     if (this.readyState === 4 && this.status === 200) {
       const username = JSON.parse(this.response);
       console.log("this is the single user",username)
+      const fullUsername = "username:" + username;
+      socket.send(JSON.stringify(fullUsername));
     }
   };
   // grab the auth_cookie from the current user
@@ -70,9 +77,9 @@ get all active users again and make two new list and then we can send the data o
 // If you want to find the value of one specified cookie, you must write a
 // JavaScript function that searches for the cookie value in the cookie string.
 
-
 socket.onclose = function() {
-
+  alert("[close] Websocket connection closed");
+  socket.send(this.close)
 }
 
 /*

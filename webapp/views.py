@@ -30,7 +30,7 @@ def home():
     from webapp.database import get_user_collection_via_auth_token
 
     auth_token_cookie = request.cookies.get("auth_token", -1)
-    print("/home tis is the the auth_token_cookie from the views.py file", auth_token_cookie)
+    print("/view tis is the the auth_token_cookie from the views.py file", auth_token_cookie)
     if auth_token_cookie == -1:
         return render_template("home.html", user=None)
     userVerifiedFromDatabase = get_user_collection_via_auth_token(auth_token_cookie)

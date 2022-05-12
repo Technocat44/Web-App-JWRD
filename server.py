@@ -1,6 +1,6 @@
 # this makes the webapp folder a package and we can import it anywhere else in our code easily 
 from flask import Flask
-from webapp import create_app, views, auth, upload, images, messages, users, account, websockets
+from webapp import create_app, views, auth, upload, images, messages, users, account
 from flask_sock import Sock
 
 app = create_app()
