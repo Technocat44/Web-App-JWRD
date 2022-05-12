@@ -63,6 +63,11 @@ def get_user_from_id(id):
   userData = users_collection.find_one({'id':id})
   return userData
 
+def get_user_from_username(username):
+  users_collection = mongo_client.db["users_collection"]
+  userData = users_collection.find_one({'username':username})
+  return userData
+
 def set_user_login_to_true(username, bool):
   username = escape_html(username)
   users_collection = mongo_client.db["users_collection"]
