@@ -1,19 +1,3 @@
-# from flask_login import LoginManager, UserMixin
-
-
-
-# login_manager = LoginManager()
-
-"""
-example: I can set a user up like this when a new client signs up
-
-session_data = User(username)
-session_data.set_authentication(True)
-session_data.get_authentication   === True    ||      signals the user is logged in
-
-
-"""
-
 class Session(object):
 
     def __init__(self, login):
