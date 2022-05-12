@@ -1,5 +1,5 @@
 # from nis import cat
-from flask import Blueprint, make_response, redirect, render_template, request, flash, url_for
+from flask import Blueprint, make_response, redirect, render_template, request, flash, url_for, session
 from webapp.database import add_auth_token_to_users_collection, check_if_user_exist_on_signup, create_user_in_db, list_all, retrieve_hashed_auth_token_from_db, retrieve_user\
     ,add_auth_token_to_users_collection, set_user_login_to_true, get_user_collection_via_auth_token, update_auth_token_to_None ,update_login_to_False\
         ,update_auth_token_to_None
@@ -114,7 +114,7 @@ def login():
                 resp = make_response(render_template("home.html", boolean=True, user=userFromDB["username"])) # make a response variable
                 resp.set_cookie("auth_token", new_auth_token, max_age=7200) # set the unhashed auth token in the cookie
         
-
+                session['id'] = userFromDB['id']
               
                 flash("Successfully Logged in!")
                 return resp
@@ -246,9 +246,9 @@ def sign_up():
                     profpic = None
                     websocketConnect = None
                     print("this is the hashed salted password: ", hash)
-                    create_user_in_db(email, username, hash, salt, login, profpic, websocketConnect)
+                    userId = create_user_in_db(email, username, hash, salt, login, profpic, websocketConnect)
                     
-                      
+                    session['id'] = userId
                     # session["username"] = username
                     flash("Account created", category='success')
                     return redirect(url_for('views.home'))

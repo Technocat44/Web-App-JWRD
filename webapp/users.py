@@ -1,13 +1,15 @@
-from crypt import methods
+from email import message
+from functools import cache
 import json
 from flask import Blueprint, render_template,request, flash, session, blueprints
-from webapp.database import get_all_users, fetch_messages, get_user_collection_via_auth_token
+from webapp.database import get_all_users, fetch_messages, get_user_collection_via_auth_token, get_user_from_id, add_message
 import time 
 import json
 
 usersGiver = Blueprint("users", __name__)
 
 activeWebSocketConnections = []
+messageTracking = {}
 
 @usersGiver.route("/ws")
 def sock(ws):
@@ -64,12 +66,27 @@ def singleUser():
 
 @usersGiver.route('/handleMessage', methods = ["POST"])
 def handleMessageForm():
-    return
+    print(request.data)
+    message = json.loads(request.data)['message']
+    id = session['id']
+    idToSend = messageTracking[id]
+    userData = get_user_from_id(id)
+    username = userData['username']
+    add_message(id, idToSend, username, message)
+    messages = fetch_messages(id, idToSend)
+    dataToSend = {'id':id, 'idToMessage': idToSend, 'messages': messages}
+    return json.dumps(dataToSend)
 
 @usersGiver.route('/fetchMessages', methods = ["POST"])
 def fetchMessages():
-    idToMessage = request.data
-    dataToSend = {'id':session['id'], 'idToMessage': idToMessage}
-    print(dataToSend)
-    # print('abcd')
-    return json.dumps({'id':session['id'], 'idToMessage': idToMessage})
+    # print(request.data)
+    idToMessage = json.loads(request.data)['id']
+    if session.get('id'):
+        messages = fetch_messages(session['id'], idToMessage)
+        dataToSend = {'id':session['id'], 'idToMessage': idToMessage, 'messages': messages}
+        messageTracking[session['id']] = idToMessage
+        print(dataToSend)
+        print('abcd')
+        return json.dumps(dataToSend)
+    else:
+        return json.dumps({'id':-1})
