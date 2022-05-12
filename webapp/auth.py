@@ -3,9 +3,12 @@ from flask import Blueprint, make_response, redirect, render_template, request, 
 from webapp.database import add_auth_token_to_users_collection, check_if_user_exist_on_signup, create_user_in_db, list_all, retrieve_hashed_auth_token_from_db, retrieve_user\
     ,add_auth_token_to_users_collection, set_user_login_to_true, get_user_collection_via_auth_token, update_auth_token_to_None ,update_login_to_False\
         ,update_auth_token_to_None
-import secrets
+#import secrets
+import base64
+import random
 import bcrypt
 import hashlib
+import string
 # from webapp.models import user_session
 
 # bcrypt = Bcrypt()
@@ -82,7 +85,8 @@ def login():
                 if loginhash != passwordhashFromDB:
                     flash("Incorrect password, try again", category='error')
                     return redirect(url_for('auth.login'))
-                new_auth_token = secrets.token_urlsafe(50)  # need to generate auth tokens
+                #new_auth_token = secrets.token_urlsafe(50)  # need to generate auth tokens
+                new_auth_token = generateAuthtoken()
                 print("this is the auth token : ",new_auth_token)
 
                 hash_of_auth_token_cookie = hashlib.sha256(new_auth_token.encode()).hexdigest()
@@ -271,6 +275,17 @@ def sign_up():
         flash("Already logged in", category='error')
     return render_template('sign-up.html')
   
+def generateAuthtoken():
+    Authtoken = ""
+    count = 0
+    while count < 11:
+        Authtoken += random.choice(string.ascii_letters)
+        count += 1
+    hashed = hashlib.sha1(Authtoken.encode('utf-8'))
+    # #print(hashed.hexdigest())
+    enHash = base64.b64encode(hashed.digest())
+    #print(token)
+    return Authtoken
 """
 To authenticate users, Flask-Login requires you implement a handful special methods in the User class. 
 The following table lists the required methods:
