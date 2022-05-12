@@ -172,7 +172,6 @@ def logout():
         # but we also want to wipe their session object
         # so before we wipe it, we grab the user name and store it in a variable, this way we can proceed to wipe the state
     # but still say good bye by passing the username variable we just created to user=<user variable> in render_template
-    return render_template('logout.html', user=usernameToDisplayOnLogout)
 
 @auther.route('/sign-up', methods=['GET','POST'])
 def sign_up():
@@ -180,7 +179,7 @@ def sign_up():
     if request.method == 'GET':
       auth_token_check = request.cookies.get("auth_token", -1)
       if auth_token_check != -1:
-        flash("user has an auth token cookie", category='error')
+        flash("user has an auth token cookie in GET", category='error')
                   # if the auth token == auth token from database, they are already logged in
         print("\n\n")
         print("/signup-auth this is the auth_token cookie ", auth_token_check)
@@ -191,24 +190,25 @@ def sign_up():
         if auth_token_from_Db: # if they have an auth token match we enter here
             # print("this is the user_session variable: ", user_session)
             # print(user_session.print_session_state())
-            flash("users auth token matches the one in the database", category='error')
-            flash("You are already logged in", category='error') 
+            flash("users auth token matches the one in the database GET", category='error')
+            flash("You are already logged in GET", category='error') 
             
             # print(user_session.get_username(), "this is what get_username returns after I logout")
             return render_template("sign-up.html", user=username)     
-        flash("auth token cookie they have doesnt match", category='error') 
+        flash("auth token cookie they have doesnt match GET ", category='error')
+        return render_template("sign-up.html")
       return render_template("sign-up.html")
     #from webapp.database import retrieve_hashed_auth_token_from_db
     # want to change it to check the auth_token 
     if request.method == 'POST':
     # global user_session
-     
+      
       auth_token_cookie = request.cookies.get("auth_token", -1)
       # if they already have an auth token, they dont need to sign up.
       # if they dont have an auth token (-1) then they have to sign up
       print("this is the auth_token_cookie: if not logged in, should be -1: ", auth_token_cookie)
       if auth_token_cookie != -1:
-          flash("user has an auth token cookie", category='error')
+          flash("user has an auth token cookie in POST", category='error')
           # so if they do have an auth token but it doesnt match the one in the database, they can sign up. 
 
 
@@ -217,18 +217,89 @@ def sign_up():
           print("/signup-auth this is the auth_token cookie ", auth_token_cookie)
 
           auth_token_from_Db = get_user_collection_via_auth_token(auth_token_cookie)
-          print("/signup-auth this is the auth token from the database", auth_token_from_Db)
+          print("/signup-auth this is the auth token from the database POST", auth_token_from_Db)
           print("\n\n")
           if auth_token_from_Db: # if they have an auth token match we enter here
               # print("this is the user_session variable: ", user_session)
               # print(user_session.print_session_state())
-              flash("users auth token matches the one in the database", category='error')
-              flash("You are already logged in", category='error')
+              flash("users auth token matches the one in the database POST", category='error')
+              flash("You are already logged in, please log out first before creating a new account POST ", category='error')
               # print(user_session.get_username(), "this is what get_username returns after I logout")
-              return render_template("sign-up.html", user=username)     
+              return render_template("sign-up.html", user=username)  
+          else:
+            data = request.form
+            print(data)
+
+            """
+            Example of form data:
+                ImmutableMultiDict([
+                    ('email', 'jamesaqu@buffalo.edu'),
+                    ('username', 'James'), 
+                    ('password1', '1234'), 
+                    ('password2', '1234')])
+            """
+            email = request.form.get('email')
+            username = request.form.get('username')
+            passwordOne = request.form.get('password1')
+            passwordTwo = request.form.get('password2')
+            
+            # Super cool feature of Flask that allows us to respond to a user on malformed input 
+            # https://www.tutorialspoint.com/flask/flask_message_flashing.htm
+            if len(email) < 4:
+                flash("Email must be longer than 4 characters.", category='error')
+            elif len(username) < 2:
+                flash("Name must be longer than 2 characters.", category='error')
+            elif passwordOne != passwordTwo:
+                flash("Passwords do not match, try again.", category='error')
+            elif len(passwordOne) < 7:
+                flash("Passwords must be 8 characters or more.", category='error')
+            else:
+                # add user to database
+                # set up a new collection that stores the auth_token, username, email, password and salt
+                """
+                username = Exact same username the user created on sign up
+                    add a check to see if the username already exist, if it does flash the user to make a new one
+                password = password if it is 8 characters long and the two passwords entered match
+                    generate some salt, append it to the password, hash it and store it in the database
+                email = standard email
+
+                auth_token = empty until user logs in
+
+                salt = random string to append to the plaintext username
 
 
-      else:
+                user_collection example =
+                {"username": "jamesaqu", "email": "jamesaqu@buffalo.edu",  "password": "$2js7fng84n7ab7fb949", "id": number
+                will be blank on sign up[[ "auth_token": "$hah7jie9se48ei" ]] }
+                """
+                existing_user = check_if_user_exist_on_signup(username)
+                if existing_user: # if the user exist we want to flash a message and tell the person signing up to try again
+                    flash("Username already exists, Please try again", category="error")
+                else: # there is no username match in the database, so create a new user
+                    """
+                    When the user gives you their password (in the sign-up phase), hash it and then save the hash to the database. 
+                    When the user logs in, create the hash from the entered password and then compare it with the hash 
+                    stored in the database. If they match, log in the user. Otherwise, display an error message.
+                    function : check_password_hash(password_hash, password)
+
+                    """
+                    salt = bcrypt.gensalt(15)
+                    hash = bcrypt.hashpw(passwordOne.encode(), salt)
+                    login = False
+                    websocketConnect = None
+                    notification = None
+
+                    print("this is the hashed salted password: ", hash)
+                    userId = create_user_in_db(email, username, hash, salt, login, websocketConnect, notification)
+                    
+                    session['id'] = userId
+                    # session["username"] = username
+                    flash("Account created", category='success')
+                    return redirect(url_for('views.home'))
+
+
+
+      if auth_token_cookie:
         
             data = request.form
             print(data)
