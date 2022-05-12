@@ -4,10 +4,9 @@ content%}
 <script src="../static/state.js"></script>
 <script src="../static/function.js"></script>
 
-
 <div class="users">
-   <form action="{{ url_for('users.handleMessageForm') }}" method="post">
-      <div class="messageWindow" id = 'messageWindow'>
+   <!-- <form action="{{ url_for('users.handleMessageForm') }}" method="post"> -->
+      <div class="messageWindow" id="messageWindow">
          <div class="messageWindow_top">
             <div class="messageWindow_top_exitButton">
                <img
@@ -20,12 +19,8 @@ content%}
             <h2 class="messageWindow_top_title">Messages</h2>
          </div>
          <div class="messageWindow_messages">
-            <ul class="messageWindow_messages_list">
-               {% if msgs != None %}
-               {%for i in msgs %}
-                  <li class="messageWindow_messages_instance"><span class="bold">{{i['user']}}: </span>{{i['message']}}</li>
-               {%endfor%}
-               {% endif %}
+            <ul class="messageWindow_messages_list" id="messageWindow_messages_list">
+               <li id="messageInstance" class="messageWindow_messages_instance"></li>
             </ul>
          </div>
          <div class="messageWindow_bottom">
@@ -39,7 +34,7 @@ content%}
                />
             </div>
             <div class="messageWindow_bottom_submitDiv">
-               <button class="messageWindow_bottom_submit">
+               <button class="messageWindow_bottom_submit" onclick="sendMessage()">
                   <img
                      src="../static/assets/arrow-right-solid.svg"
                      class="messageWindow_bottom_submit_svg"
@@ -49,7 +44,7 @@ content%}
             </div>
          </div>
       </div>
-   </form>
+   <!-- </form> -->
 
    <h1 class="users_header">Users</h1>
 

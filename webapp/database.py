@@ -58,6 +58,11 @@ def get_all_users():
   usersData = users_collection.find({}, {"_id":0, "password":0,"salt":0})
   return usersData
 
+def get_user_from_id(id):
+  users_collection = mongo_client.db["users_collection"]
+  userData = users_collection.find_one({'id':id})
+  return userData
+
 def set_user_login_to_true(username, bool):
   username = escape_html(username)
   users_collection = mongo_client.db["users_collection"]
@@ -193,22 +198,31 @@ def getPhotos():
       arr.append(paths['path'])
   return arr
 
+<<<<<<< HEAD
 def add_message(user1, user2, message):
   user1 = escape_html(user1)
   user2 = escape_html(user2)
   message = escape_html(message)
+=======
+def add_message(id1, id2, usernameSending, message):
+>>>>>>> messagingDone_dan
   # find if a collection for these users exist
-  temp = mongo_client.db["messages_collections"].find({"users": {"$all": [user1, user2]}})
-  found = []
+  col = mongo_client.db["messages_collections"]
+  case1 = col.find_one({'id1': id1, 'id2':id2})
+  case2 = col.find_one({'id1': id2, 'id2':id1})
+  temp = None
+  if case1:
+    temp = case1
+  elif case2:
+    temp = case2
   message_collections = mongo_client.db["messages_collections"]
-  for x in temp:
-    found.append(x)
-  print(found)
-  if len(found) == 0:
-    message_collections.insert_one({"users": [user1, user2], "messages":[{"user": user1, "message": message}]})
+  if temp == None:
+    # message_collections.insert_one({"id1": id1, "id2": id2, "messages":[{"user": usernameSending, "message": message}]})
+    print("Record with specified ids does not exist (add_message)")
   else:
-    query = {"users": {"$all": [user1, user2]}}
-    appender = {"$push":{"messages": {"user": user1, "message": message}}}
+    query = {"$or": [{'id1':id1, 'id2':id2}, {'id2':id1}, {'id1':id2}]}
+
+    appender = {"$push":{"messages": {"user": usernameSending, "message": message}}}
     message_collections.update_one(query, appender)
 
 def fetch_messages(id1, id2):
@@ -216,9 +230,9 @@ def fetch_messages(id1, id2):
   case1 = col.find_one({'id1': id1, 'id2':id2})
   case2 = col.find_one({'id1': id2, 'id2':id1})
   if case1:
-    return case1['massages']
+    return case1['messages']
   elif case2:
-    return case2['massages']
+    return case2['messages']
   else:
     col.insert_one({'id1': id1, 'id2': id2, 'messages': []})
     return []
