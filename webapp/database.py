@@ -264,7 +264,7 @@ def insertProfilePic(imageID,user):
 
 def insertDesc(desc,user):
   desc = escape_html(desc)
-  user = escape_html(user)
+  #user = escape_html(user)
   users_collection = mongo_client.db["users_collection"]
   print(user['username'],flush = True)
   for users in users_collection.find():
