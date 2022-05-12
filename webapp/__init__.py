@@ -89,8 +89,10 @@ def socker(ws):
       if actualUsername not in websocket_connections_dict.values():
         websocket_connections_dict[currentWebSocketConnection] = actualUsername
         # this adds a username as a key and a websocket connection as a value
+      
+      if actualUsername != "":
         username_websocket_collection_dict[actualUsername] = currentWebSocketConnection
-        
+      
       print('this is the ws connection = ' ,ws)
 
 
