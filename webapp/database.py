@@ -198,14 +198,7 @@ def getPhotos():
       arr.append(paths['path'])
   return arr
 
-<<<<<<< HEAD
-def add_message(user1, user2, message):
-  user1 = escape_html(user1)
-  user2 = escape_html(user2)
-  message = escape_html(message)
-=======
 def add_message(id1, id2, usernameSending, message):
->>>>>>> messagingDone_dan
   # find if a collection for these users exist
   col = mongo_client.db["messages_collections"]
   case1 = col.find_one({'id1': id1, 'id2':id2})
@@ -220,7 +213,7 @@ def add_message(id1, id2, usernameSending, message):
     # message_collections.insert_one({"id1": id1, "id2": id2, "messages":[{"user": usernameSending, "message": message}]})
     print("Record with specified ids does not exist (add_message)")
   else:
-    query = {"$or": [{'id1':id1, 'id2':id2}, {'id2':id1}, {'id1':id2}]}
+    query = {"$or": [{'id1':id1, 'id2':id2}, {'id2':id1, 'id1':id2}]}
 
     appender = {"$push":{"messages": {"user": usernameSending, "message": message}}}
     message_collections.update_one(query, appender)

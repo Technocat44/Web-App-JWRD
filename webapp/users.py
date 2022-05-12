@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-=======
-from email import message
-from functools import cache
->>>>>>> messagingDone_dan
 import json
 from flask import Blueprint, render_template,request, flash, session, blueprints
 from webapp.database import get_all_users, fetch_messages, get_user_collection_via_auth_token, get_user_from_id, add_message
@@ -77,6 +72,8 @@ def handleMessageForm():
     username = userData['username']
     add_message(id, idToSend, username, message)
     messages = fetch_messages(id, idToSend)
+    print("messages handle: ",messages)
+    print(1)
     dataToSend = {'id':id, 'idToMessage': idToSend, 'messages': messages}
     return json.dumps(dataToSend)
 
