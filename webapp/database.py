@@ -78,11 +78,11 @@ def set_user_login_to_true(username, bool):
   {"username": "jamesaqu", "email": "jamesaqu@buffalo.edu",  "password": "$2js7fng84n7ab7fb949",
    "id": Number, "auth_token": will be blank at sign up }
 """
-def create_user_in_db(email, username, hashedpw, salt, login, profpic, websocketConn):
+def create_user_in_db(email, username, hashedpw, salt, login, websocketConn):
   users_collection = mongo_client.db["users_collection"]
   email = escape_html(email)
   username = escape_html(username)
-  userDict = {"email":email, "username":username, "password":hashedpw,"salt":salt, "login":login, "profilePic": profpic,"description":"", "websocketActive": websocketConn}
+  userDict = {"email":email, "username":username, "password":hashedpw,"salt":salt, "login":login,"description":"", "websocketActive": websocketConn}
   userDict["id"] = get_next_id()
   users_collection.insert_one(userDict)
   userDict.pop("_id")
@@ -253,7 +253,7 @@ def list_messages(user1, user2):
 def insertProfilePic(imageID,user):
   users_collection = mongo_client.db["users_collection"]
   #photoData = {'path': 'image-' + str(imageID) + '.jpg'}
-  user = escape_html(user)
+  #user = escape_html(user)
   print(user['username'],flush = True)
   for users in users_collection.find():
     if users['username'] == user['username']:
