@@ -1,9 +1,7 @@
-from flask import Blueprint, render_template,request
-from flask import Flask, render_template, request, redirect, url_for
-
+from flask import Flask, Blueprint, render_template, request, redirect, url_for
 from webapp.database import insertProfilePic, insertDesc
-from .database import getPhotos, getImageFileID,insertImages, get_user_collection_via_auth_token
-from .templeter import createList
+from webapp.database import getPhotos, getImageFileID,insertImages, get_user_collection_via_auth_token
+from webapp.templeter import createList
 
 accounter = Blueprint('account', __name__)
 

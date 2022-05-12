@@ -1,5 +1,4 @@
-from flask import Blueprint, render_template,request
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, Blueprint, render_template,request, redirect, url_for
 from .database import getPhotos, getImageFileID,insertImages
 from .templeter import createList
 
