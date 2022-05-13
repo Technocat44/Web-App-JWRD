@@ -83,12 +83,14 @@ def socker(ws):
             usernameKey = k
         # print('username updating: ', usernameKey)
         if usernameKey != "":
-          connectionToSend = username_websocket_connection_dict[usernameKey]
-          connectionToSend.send('fetch_messages')
+          connectionToSend = username_websocket_connection_dict.get(usernameKey, -1)
           print("init.py we're updating the users collection that they have a notification to True")
           update_notifcation_to_True(usernameKey)
           dict = username_collection_dict[usernameKey]
           dict["notifications"] = True
+          if connectionToSend != -1:
+            connectionToSend.send('fetch_messages')
+      
 
 
       
