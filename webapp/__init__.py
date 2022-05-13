@@ -76,8 +76,13 @@ def socker(ws):
         wsid = int(datasplit[1])
         print("this is the usersId : ",wsid)
         print("this is the type of usersId :", type(wsid))
+<<<<<<< HEAD
         for k,v in username_collection_dict.items():
           print('v is: ',v)
+=======
+        for k,v in username_collection_dict:
+          v = json.loads(v)
+>>>>>>> 2c711deb0b37668c30d5f1b47b6bc1ee9a9ece6f
           if v['id'] == wsid:
             usernameKey = k
         # print('username updating: ', usernameKey)
@@ -112,19 +117,26 @@ def socker(ws):
         userKey = userColl["username"]
         if userKey not in username_collection_dict.keys():
           username_collection_dict[userKey] = userColl
-          dict = username_collection_dict[userKey]
-          dict["websocketActive"] = True
+
 
       
       if actualUsername != "":
         ### I need to store the currentWSConnetion as a string in order to see it properly
         username_websocket_connection_dict[actualUsername] = currentWebSocketConnection
-        update_wehsocket_to_True(actualUsername)
         print("this is the actual username = ", actualUsername)
       
       
       print('this is the ws connection = ' ,ws)
 
+
+      ## If the username is in the username_websocket_connection_dict then that means they are active and we can 
+      # update the database and the username_collection_dict to reflect this.
+      if actualUsername in username_websocket_connection_dict.keys() and actualUsername in username_collection_dict.keys():
+        update_wehsocket_to_True(actualUsername)
+        print("this is the type of the actual user name ", type(actualUsername))
+        print("THESE ARE THE USER COLLECTION DICTS", username_collection_dict)
+        dict = username_collection_dict[actualUsername]
+        dict["websocketActive"] = True
 
         
       if userFlag == 0:
@@ -135,7 +147,7 @@ def socker(ws):
         print("setting the websocket connection to false")
         update_websocket_to_False(actualUsername)
         dict = username_collection_dict[actualUsername]
-        dict["websocketActive"] = True
+        dict["websocketActive"] = False
 
         print("these are the current users after a client leaves the user tab", username_websocket_connection_dict)
 
