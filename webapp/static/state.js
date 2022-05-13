@@ -13,7 +13,7 @@ socket.onopen = function() {
   alert(document.cookie)
   // this will create a list of active and inactive users
   getSingleUser();
-  getAllUsers(); 
+  
 
     // make the user active dot green
 }
@@ -26,6 +26,7 @@ function getSingleUser() {
       console.log("this is the single user",username)
       const fullUsername = "username:" + username;
       socket.send(JSON.stringify(fullUsername));
+      getAllUsers(); 
     }
   };
   // grab the auth_cookie from the current user
@@ -58,7 +59,9 @@ function getAllUsers() {
       console.log("all the users",allusers)
       for (const users of allusers){
         console.log("these are the users", users);
-        sendToServer(users);
+        // sendToServer(users);
+        const userCollection = "userCollection:" + JSON.stringify(users);
+        socket.send(JSON.stringify(userCollection));
       }
     }
   };
@@ -77,10 +80,10 @@ get all active users again and make two new list and then we can send the data o
 // If you want to find the value of one specified cookie, you must write a
 // JavaScript function that searches for the cookie value in the cookie string.
 
-socket.onclose = function() {
-  alert("[close] Websocket connection closed");
-  socket.send(this.close)
-}
+// socket.onclose = function() {
+//   alert("[close] Websocket connection closed");
+//   socket.send(this.close)
+// }
 
 /*
 
@@ -141,6 +144,7 @@ function sendMessage() {
          } else {
             console.log(response.messages)
             openMessages(response.messages)
+            // sending the message to the socket
             socket.send('update:', idToMessage)
          }
       }
