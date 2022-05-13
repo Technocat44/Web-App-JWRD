@@ -43,7 +43,7 @@ def create_app():
 
 @sock.route("/ws")
 def socker(ws):
-  from webapp.database import fetch_messages, get_user_from_username
+  from webapp.database import fetch_messages, get_user_from_username, update_notifcation_to_True, update_websocket_to_False, update_wehsocket_to_True
 
   currentWebSocketConnection = None
   userFlag = 1
@@ -69,13 +69,21 @@ def socker(ws):
       ###### Handling a socket response with the client id of the user who is to be notified that they recieved a message
       # the user received a message should be in form "update:<id number>"
       # TODO: Need to take the id, find it in the collections and update that users key of notification that they received a message
+      usernameKey = ""
       if str(data)[:6] == str('update'):
         data = str(data)
         datasplit = data.split(":")
-        usersId = datasplit[1]
-        print("this is the usersId : ",usersId)
-        print("this is the type of usersId :", type(usersId))
-        pass
+        wsid = int(datasplit[1])
+        print("this is the usersId : ",wsid)
+        print("this is the type of usersId :", type(wsid))
+        for k,v in username_collection_dict:
+          if v['id'] == wsid:
+            usernameKey = k
+        if usernameKey != "":
+          print("init.py we're updating the users collection that they have a notification to True")
+          update_notifcation_to_True(usernameKey)
+          dict = username_collection_dict[usernameKey]
+          dict["notifications"] = True
 
 
       
@@ -84,7 +92,6 @@ def socker(ws):
       # this function sets the userFlag to 0 which is a signal and then if its 0 we remove them from the websocket connection dict
       if str(data) == str("closing"):
         # TODO: write a function that finds the username in the dictionary and sets the userIndex to something other than 1000 
-        userFromDict = old_websocket_connections_dict[str(ws)]
         userFlag = 0
 
 
@@ -103,37 +110,31 @@ def socker(ws):
         userKey = userColl["username"]
         if userKey not in username_collection_dict.keys():
           username_collection_dict[userKey] = userColl
+          dict = username_collection_dict[userKey]
+          dict["websocketActive"] = True
 
-        
-
-
-      currentWebSocketConnection = str(ws)
-
-      ###### OLD CODE BUT LEAVE IT IN CASE WE NEED IT
-      if str(ws) not in old_websocket_connections_dict.keys():
-        # TODO: add the websocket connection:username key value pair to the dict
-        print("THE WS CONNECTION IS NOT IN THE DICT")
-        old_websocket_connections_dict[currentWebSocketConnection] = actualUsername
-        print("THE WS CONNECTION IS NOw IN THE DICT")
-      if actualUsername not in old_websocket_connections_dict.values():
-        old_websocket_connections_dict[currentWebSocketConnection] = actualUsername
-        # this adds a username as a key and a websocket connection as a value
       
       if actualUsername != "":
         ### I need to store the currentWSConnetion as a string in order to see it properly
         username_websocket_connection_dict[actualUsername] = currentWebSocketConnection
+        update_wehsocket_to_True(actualUsername)
+        print("this is the actual username = ", actualUsername)
+      
       
       print('this is the ws connection = ' ,ws)
 
 
-      # if ws not in websocket_connections:
-      #   websocket_connections.append(ws)        
+        
       if userFlag == 0:
         # TODO: Means the user left the page and needs we need to remove them 
         del old_websocket_connections_dict[currentWebSocketConnection]
         del username_websocket_connection_dict[actualUsername]
-        #  websocket_connections.pop(userFlag)
-      
+        # take the actualUsername, and update the collection in the database
+        print("setting the websocket connection to false")
+        update_websocket_to_False(actualUsername)
+        dict = username_collection_dict[actualUsername]
+        dict["websocketActive"] = True
+
         print("these are the current users after a client leaves the user tab", username_websocket_connection_dict)
 
         
@@ -148,6 +149,20 @@ def socker(ws):
       print("these are all the collections from all the users that are logged in: ", username_collection_dict)
 
       print("\n")
+
+
+
+      currentWebSocketConnection = str(ws)
+
+      ###### OLD CODE BUT LEAVE IT IN CASE WE NEED IT
+      if str(ws) not in old_websocket_connections_dict.keys():
+        # TODO: add the websocket connection:username key value pair to the dict
+        print("THE WS CONNECTION IS NOT IN THE DICT")
+        old_websocket_connections_dict[currentWebSocketConnection] = actualUsername
+        print("THE WS CONNECTION IS NOw IN THE DICT")
+      if actualUsername not in old_websocket_connections_dict.values():
+        old_websocket_connections_dict[currentWebSocketConnection] = actualUsername
+        # this adds a username as a key and a websocket connection as a value
       """
       How can I match a websocket connection to specific user?
       We are going to need to add a current user to the users page so we can match the 
