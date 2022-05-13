@@ -56,6 +56,7 @@ def singleUser():
     user = userCollection["username"]
     user = json.dumps(user)
     return user
+
 @usersGiver.route('/handleMessage', methods = ["POST"])
 def handleMessageForm():
     print(request.data)

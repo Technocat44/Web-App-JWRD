@@ -215,5 +215,7 @@ socket.onmessage = function(e){
    data = e.data
    if (data == 'fetch_messages') {
       get_chat_history()
+   } elif (data.substring(0, 6) == 'active') {
+      idOfActive = 1
    }
 }

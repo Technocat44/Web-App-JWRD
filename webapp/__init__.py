@@ -134,6 +134,15 @@ def socker(ws):
         dict = username_collection_dict[actualUsername]
         dict["websocketActive"] = True
 
+        # Signal all currently active users about the new active user who just joined
+        # Signal the new user about all currently active users
+        for username in username_websocket_connection_dict.keys():
+          connection = username_websocket_connection_dict[username]
+          connection.send('active:'+str(get_user_from_username(actualUsername)['id']))
+          
+          ws.send('active:'+str(get_user_from_username(username)['id']))
+        
+
         
       if userFlag == 0:
         # TODO: Means the user left the page and needs we need to remove them 
