@@ -141,8 +141,10 @@ def socker(ws):
         # Signal all currently active users about the new active user who just joined
         # Signal the new user about all currently active users
         for username in username_websocket_connection_dict.keys():
-          connection = username_websocket_connection_dict[username]
-          connection.send('active:'+str(get_user_from_username(actualUsername)['id']))
+          print('username iterating: ', username)
+          if (username != actualUsername):
+            connection = username_websocket_connection_dict[username]
+            connection.send('active:'+str(get_user_from_username(actualUsername)['id']))
           
           ws.send('active:'+str(get_user_from_username(username)['id']))
         
@@ -159,6 +161,11 @@ def socker(ws):
         dict["websocketActive"] = False
 
         print("these are the current users after a client leaves the user tab", username_websocket_connection_dict)
+
+        # Signal all currently active users about the leave
+        for username in username_websocket_connection_dict.keys():
+          connection = username_websocket_connection_dict[username]
+          connection.send('inactive:'+str(get_user_from_username(actualUsername)['id']))
 
         
       print("this is the data sent from functions.js websocket = ", data)

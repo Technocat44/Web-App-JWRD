@@ -1,74 +1,69 @@
-const socket = new WebSocket("ws://" + location.host + "/ws");
+const socket = new WebSocket('ws://' + location.host + '/ws')
 
-console.log("this is establishing a websocket", socket)
+console.log('this is establishing a websocket', socket)
 
 window.onbeforeunload = function () {
-  alert("[leaving page]");
-  socket.send(JSON.stringify("closing"));
-
+   alert('[leaving page]')
+   socket.send(JSON.stringify('closing'))
 }
-// the socket event  
-socket.onopen = function() {
-  alert("[open] Connection established");
-  alert(document.cookie)
-  // this will create a list of active and inactive users
-  getSingleUser();
-  
+// the socket event
+socket.onopen = function () {
+   alert('[open] Connection established')
+   alert(document.cookie)
+   // this will create a list of active and inactive users
+   getSingleUser()
 
-    // make the user active dot green
+   // make the user active dot green
 }
 
 function getSingleUser() {
-  const request = new XMLHttpRequest();
-  request.onreadystatechange = function () {
-    if (this.readyState === 4 && this.status === 200) {
-      const username = JSON.parse(this.response);
-      console.log("this is the single user",username)
-      const fullUsername = "username:" + username;
-      socket.send(JSON.stringify(fullUsername));
-      getAllUsers(); 
-    }
-  };
-  // grab the auth_cookie from the current user
-  // open a post request to the single user path in users 
-  // send tp the single user path with the auth token from the current user
-  const auth_cookie = getCookie();
-  console.log("AUTH COOKIE >>>" , auth_cookie)
-  if (auth_cookie != "") {
-    request.open('POST', '/singleUser');
-    request.setRequestHeader("Content-Type", "application/json");
-    request.send(JSON.stringify(auth_cookie));
-  }
-  
+   const request = new XMLHttpRequest()
+   request.onreadystatechange = function () {
+      if (this.readyState === 4 && this.status === 200) {
+         const username = JSON.parse(this.response)
+         console.log('this is the single user', username)
+         const fullUsername = 'username:' + username
+         socket.send(JSON.stringify(fullUsername))
+         getAllUsers()
+      }
+   }
+   // grab the auth_cookie from the current user
+   // open a post request to the single user path in users
+   // send tp the single user path with the auth token from the current user
+   const auth_cookie = getCookie()
+   console.log('AUTH COOKIE >>>', auth_cookie)
+   if (auth_cookie != '') {
+      request.open('POST', '/singleUser')
+      request.setRequestHeader('Content-Type', 'application/json')
+      request.send(JSON.stringify(auth_cookie))
+   }
 }
 
-function sendToServer(user){
-  socket.send(JSON.stringify(user));
+function sendToServer(user) {
+   socket.send(JSON.stringify(user))
 }
-
 
 // want to write a function that gets all the users from the database
 // 1. we need to get all users
 // 2. check if the user is active, create a list of active users
 // 3. if they are not active       create a list of inactive users
 function getAllUsers() {
-  const request = new XMLHttpRequest();
-  request.onreadystatechange = function () {
-    if (this.readyState === 4 && this.status === 200) {
-      const allusers = JSON.parse(this.response);
-      console.log("all the users",allusers)
-      for (const users of allusers){
-        console.log("these are the users", users);
-        // sendToServer(users);
-        const userCollection = "userCollection:" + JSON.stringify(users);
-        socket.send(JSON.stringify(userCollection));
+   const request = new XMLHttpRequest()
+   request.onreadystatechange = function () {
+      if (this.readyState === 4 && this.status === 200) {
+         const allusers = JSON.parse(this.response)
+         console.log('all the users', allusers)
+         for (const users of allusers) {
+            console.log('these are the users', users)
+            // sendToServer(users);
+            const userCollection = 'userCollection:' + JSON.stringify(users)
+            socket.send(JSON.stringify(userCollection))
+         }
       }
-    }
-  };
-  request.open("GET", "/allUsers");
-  request.send();
+   }
+   request.open('GET', '/allUsers')
+   request.send()
 }
-  
 
 // Now after getAllUsers() we have a list of all active and inactive users
 // now we can grab each users document.getElementById and using websockets update their active button
@@ -100,24 +95,23 @@ If the cookie is found (cookie.indexOf(name) == 0), return the value of the cook
 If the cookie is not found, return "".
 */
 function getCookie() {
-  let name = "auth_token" + "=";
-  console.log(document.cookie)
-  let decodedCookie = decodeURIComponent(document.cookie);
-  console.log("decoded cookie >>>", decodedCookie)
-  let cookieArray = decodedCookie.split(';');
-  console.log("cookie array >>>", cookieArray)
-  for(let i = 0; i <cookieArray.length; i++) {
-    let cookie = cookieArray[i];
-    while (cookie.charAt(0) == ' ') {
-      cookie = cookie.substring(1);
-    }
-    if (cookie.indexOf(name) == 0) {
-      return cookie.substring(name.length, cookie.length);
-    }
-  }
-  return "";
+   let name = 'auth_token' + '='
+   console.log(document.cookie)
+   let decodedCookie = decodeURIComponent(document.cookie)
+   console.log('decoded cookie >>>', decodedCookie)
+   let cookieArray = decodedCookie.split(';')
+   console.log('cookie array >>>', cookieArray)
+   for (let i = 0; i < cookieArray.length; i++) {
+      let cookie = cookieArray[i]
+      while (cookie.charAt(0) == ' ') {
+         cookie = cookie.substring(1)
+      }
+      if (cookie.indexOf(name) == 0) {
+         return cookie.substring(name.length, cookie.length)
+      }
+   }
+   return ''
 }
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -148,7 +142,7 @@ function sendMessage() {
             openMessages(response.messages)
             // sending the message to the socket
             console.log(idToMessage)
-            socket.send(JSON.stringify('update:'+ idToMessage))
+            socket.send(JSON.stringify('update:' + idToMessage))
          }
       }
    }
@@ -195,7 +189,9 @@ function openMessages(messages) {
       const clone = messageInstance.cloneNode(true)
       clone.style.display = 'block'
       clone.id = 'messageInstanceClone'
-      clone.appendChild(document.createTextNode(message['user']+': '+message['message']))
+      clone.appendChild(
+         document.createTextNode(message['user'] + ': ' + message['message'])
+      )
       document.getElementById('messageWindow_messages_list').appendChild(clone)
    }
 }
@@ -211,11 +207,50 @@ function closeMessages() {
    x.style.display = 'none'
 }
 
-socket.onmessage = function(e){
+socket.onmessage = function (e) {
    data = e.data
+   console.log('SOCKET DATA RECEIVED: ', data)
    if (data == 'fetch_messages') {
       get_chat_history()
-   } elif (data.substring(0, 6) == 'active') {
-      idOfActive = 1
+   } else if (data.substring(0, 6) == 'active') {
+      idOfActive = data.split(':')[1]
+      userCard = document.getElementById(idOfActive)
+      console.log('RECEIVED: active id ', idOfActive)
+      if (userCard) {
+         for (child of userCard.children) {
+            if (child.id == 'userCard_avatar') {
+               for (miniChild of child.children) {
+                  if (miniChild.id == 'onlineDiv') {
+                     for (omegaMini of miniChild.children) {
+                        if (omegaMini.className == 'onlineStatus_off') {
+                           console.log(omegaMini.className)
+                           omegaMini.className = 'onlineStatus_on'
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
+   } else if (data.substring(0, 8) == 'iniactive') {
+      idOfActive = data.split(':')[1]
+      userCard = document.getElementById(idOfActive)
+      console.log('RECEIVED: inactive id ', idOfActive)
+      if (userCard) {
+         for (child of userCard.children) {
+            if (child.id == 'userCard_avatar') {
+               for (miniChild of child.children) {
+                  if (miniChild.id == 'onlineDiv') {
+                     for (omegaMini of miniChild.children) {
+                        if (omegaMini.className == 'onlineStatus_on') {
+                           console.log(omegaMini.className)
+                           omegaMini.className = 'onlineStatus_off'
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
    }
 }

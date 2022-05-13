@@ -51,14 +51,14 @@ content%}
    <div class="users_container">
       {%for user in users %}
       <div class="userCard" id="{{user['id']}}">
-         <div class="userCard_avatar">
+         <div class="userCard_avatar" id="userCard_avatar">
             <img
                class="userCard_avatar_image"
                src="{{user['profilePic']}}"
                alt="avatar"
             />
-            <div class="onlineDiv">
-               <div class="onlineStatus_on"></div>
+            <div class="onlineDiv" id="onlineDiv">
+               <div class="onlineStatus_off"></div>
             </div>
          </div>
          <div class="userCard_main">
