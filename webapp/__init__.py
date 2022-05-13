@@ -77,7 +77,6 @@ def socker(ws):
         print("this is the usersId : ",wsid)
         print("this is the type of usersId :", type(wsid))
         for k,v in username_collection_dict:
-          v = json.loads(v)
           if v['id'] == wsid:
             usernameKey = k
         if usernameKey != "":
