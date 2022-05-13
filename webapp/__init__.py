@@ -76,17 +76,14 @@ def socker(ws):
         wsid = int(datasplit[1])
         print("this is the usersId : ",wsid)
         print("this is the type of usersId :", type(wsid))
-<<<<<<< HEAD
         for k,v in username_collection_dict.items():
           print('v is: ',v)
-=======
-        for k,v in username_collection_dict:
-          v = json.loads(v)
->>>>>>> 2c711deb0b37668c30d5f1b47b6bc1ee9a9ece6f
           if v['id'] == wsid:
             usernameKey = k
         # print('username updating: ', usernameKey)
         if usernameKey != "":
+          connectionToSend = username_websocket_connection_dict[usernameKey]
+          connectionToSend.send('fetch_messages')
           print("init.py we're updating the users collection that they have a notification to True")
           update_notifcation_to_True(usernameKey)
           dict = username_collection_dict[usernameKey]
@@ -166,10 +163,10 @@ def socker(ws):
 
 
 
-      currentWebSocketConnection = str(ws)
+      currentWebSocketConnection = ws
 
       ###### OLD CODE BUT LEAVE IT IN CASE WE NEED IT
-      if str(ws) not in old_websocket_connections_dict.keys():
+      if ws not in old_websocket_connections_dict.keys():
         # TODO: add the websocket connection:username key value pair to the dict
         print("THE WS CONNECTION IS NOT IN THE DICT")
         old_websocket_connections_dict[currentWebSocketConnection] = actualUsername

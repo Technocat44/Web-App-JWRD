@@ -210,3 +210,10 @@ function closeMessages() {
    var x = document.getElementById('messageWindow')
    x.style.display = 'none'
 }
+
+socket.onmessage = function(e){
+   data = e.data
+   if (data == 'fetch_messages') {
+      get_chat_history()
+   }
+}
