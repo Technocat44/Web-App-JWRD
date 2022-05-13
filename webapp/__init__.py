@@ -76,8 +76,7 @@ def socker(ws):
         wsid = int(datasplit[1])
         print("this is the usersId : ",wsid)
         print("this is the type of usersId :", type(wsid))
-        for k,v in username_collection_dict.items():
-          print('v is: ',v)
+        for k,v in username_collection_dict:
           if v['id'] == wsid:
             usernameKey = k
         # print('username updating: ', usernameKey)
