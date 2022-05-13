@@ -1,14 +1,14 @@
-dnspython==2.2.0
-pymongo==4.0.1
+
 Flask
 flask
-flask-login
+flask-sock
+bcrypt
+# flask-login
 flask-pymongo
-pythondns
+# pythondns
 python-dotenv
 certifi
-flask-bcrypt
+# flask-bcrypt
 pymongo[srv]
-secrets
-bcrypt
-flask-sock
+dnspython==2.2.0
+pymongo==4.0.1
