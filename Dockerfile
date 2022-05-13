@@ -7,12 +7,13 @@ EXPOSE 5000
 
 RUN pip install --user pyopenssl
 #RUN pip3 install -r  requirements.txt
+# RUN apt-get update && apt-get install -y libldap2-dev
 RUN /usr/local/bin/python -m pip install --upgrade pip
 #RUN pip install --user python-ldap
 #RUN python3 -m pip install python-dev-tools --user --upgrade
 RUN python -m pip install --user --upgrade setuptools
 #RUN python -m pip install --user python-ldap
-RUN pip install --user --upgrade -r requirements.txt
+RUN pip install -r requirements.txt
 
 
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait

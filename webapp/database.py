@@ -4,10 +4,10 @@ from flask_pymongo import PyMongo
 import certifi
 import hashlib
 
-from markupsafe import escape_silent
-from webapp.models import user_session
+# from markupsafe import escape_silent
+# from webapp.models import user_session
 
-from webapp import auth
+# from webapp import auth
 
 mongo_client = PyMongo(tlsCAFile=certifi.where())
 
@@ -235,7 +235,7 @@ def add_message(id1, id2, usernameSending, message):
     print("Record with specified ids does not exist (add_message)")
   else:
     query = {"$or": [{'id1':id1, 'id2':id2}, {'id2':id1, 'id1':id2}]}
-
+  
     appender = {"$push":{"messages": {"user": usernameSending, "message": message}}}
     message_collections.update_one(query, appender)
 
