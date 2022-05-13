@@ -147,7 +147,8 @@ function sendMessage() {
             console.log(response.messages)
             openMessages(response.messages)
             // sending the message to the socket
-            socket.send('update:', idToMessage)
+            console.log(idToMessage)
+            socket.send(JSON.stringify('update:'+ idToMessage))
          }
       }
    }
