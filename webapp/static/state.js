@@ -5,6 +5,7 @@ console.log('this is establishing a websocket', socket)
 window.onbeforeunload = function () {
    alert('[leaving page]')
    socket.send(JSON.stringify('closing'))
+   console.log('SENDING CLOSING')
 }
 // the socket event
 socket.onopen = function () {
@@ -232,7 +233,7 @@ socket.onmessage = function (e) {
             }
          }
       }
-   } else if (data.substring(0, 8) == 'iniactive') {
+   } else if (data.substring(0, 8) == 'inactive') {
       idOfActive = data.split(':')[1]
       userCard = document.getElementById(idOfActive)
       console.log('RECEIVED: inactive id ', idOfActive)

@@ -50,10 +50,10 @@ def socker(ws):
   actualUsername = ""
   while True:
       data = ws.receive()
-      print("this is the type of the data before JSON loads", type(data))
-      print("this is the data of the data", data)
+      # print("this is the type of the data before JSON loads", type(data))
+      # print("this is the data of the data", data)
       data = json.loads(data)
-      print("this is the type of the data after JSON loads", type(data))
+      # print("this is the type of the data after JSON loads", type(data))
 
       ##### Handling a socket response with the clients username
       if str(data).startswith("username"):
@@ -61,11 +61,7 @@ def socker(ws):
         splitData = data.split(":")
 
         actualUsername = splitData[1]
-
-   #username_websocket_connection_dict should be { "coolguy":"<simple_websocket.ws.Server object at 0x7f653c114e50>",
-   #                                                "batman":"<simple_websocket.ws.Server object at 0x7fnfdjfdfnei>"}
       
-
       ###### Handling a socket response with the client id of the user who is to be notified that they recieved a message
       # the user received a message should be in form "update:<id number>"
       # TODO: Need to take the id, find it in the collections and update that users key of notification that they received a message
@@ -74,17 +70,17 @@ def socker(ws):
         data = str(data)
         datasplit = data.split(":")
         wsid = int(datasplit[1])
-        print("this is the usersId : ",wsid)
-        print("this is the type of usersId :", type(wsid))
+        # print("this is the usersId : ",wsid)
+        # print("this is the type of usersId :", type(wsid))
         for k,v in username_collection_dict.items():
-          print("these are the keys in user_collection_dict", k, " type ", type(k))
-          print("these are the values in users collection dict", v, " type ", type(v))
+          # print("these are the keys in user_collection_dict", k, " type ", type(k))
+          # print("these are the values in users collection dict", v, " type ", type(v))
           if v['id'] == wsid:
             usernameKey = k
         # print('username updating: ', usernameKey)
         if usernameKey != "":
           connectionToSend = username_websocket_connection_dict.get(usernameKey, -1)
-          print("init.py we're updating the users collection that they have a notification to True")
+          # print("init.py we're updating the users collection that they have a notification to True")
           update_notifcation_to_True(usernameKey)
           dict = username_collection_dict[usernameKey]
           dict["notifications"] = True
@@ -95,10 +91,12 @@ def socker(ws):
 
       
       print("does data == closing? ", str(data)==str("closing"))
+      print('DATA IS ', data)
       ##### Handling a socket response when the user leaves the Users tab on the webpage, meaning they are no longer "active"]
       # this function sets the userFlag to 0 which is a signal and then if its 0 we remove them from the websocket connection dict
       if str(data) == str("closing"):
         # TODO: write a function that finds the username in the dictionary and sets the userIndex to something other than 1000 
+        print('CHANGING USERFLAG TO 0')
         userFlag = 0
 
 
@@ -110,8 +108,8 @@ def socker(ws):
         data = str(data)
         datasplit = data.split(":", 1)
         userColl = datasplit[1]
-        print("the type of the userColl after splitting", type(userColl))
-        print("userColl = ", userColl)
+        # print("the type of the userColl after splitting", type(userColl))
+        # print("userColl = ", userColl)
        # extracting the JSON str dictionary
         userColl = json.loads(userColl)
         userKey = userColl["username"]
@@ -123,18 +121,18 @@ def socker(ws):
       if actualUsername != "":
         ### I need to store the currentWSConnetion as a string in order to see it properly
         username_websocket_connection_dict[actualUsername] = currentWebSocketConnection
-        print("this is the actual username = ", actualUsername)
+        # print("this is the actual username = ", actualUsername)
       
       
-      print('this is the ws connection = ' ,ws)
+      # print('this is the ws connection = ' ,ws)
 
 
       ## If the username is in the username_websocket_connection_dict then that means they are active and we can 
       # update the database and the username_collection_dict to reflect this.
-      if actualUsername in username_websocket_connection_dict.keys() and actualUsername in username_collection_dict.keys():
+      if userFlag!=0 and actualUsername in username_websocket_connection_dict.keys() and actualUsername in username_collection_dict.keys():
         update_wehsocket_to_True(actualUsername)
-        print("this is the type of the actual user name ", type(actualUsername))
-        print("THESE ARE THE USER COLLECTION DICTS", username_collection_dict)
+        # print("this is the type of the actual user name ", type(actualUsername))
+        # print("THESE ARE THE USER COLLECTION DICTS", username_collection_dict)
         dict = username_collection_dict[actualUsername]
         dict["websocketActive"] = True
 
@@ -149,7 +147,7 @@ def socker(ws):
           ws.send('active:'+str(get_user_from_username(username)['id']))
         
 
-        
+      print('USERFLAG IS: ', userFlag)
       if userFlag == 0:
         # TODO: Means the user left the page and needs we need to remove them 
         del old_websocket_connections_dict[currentWebSocketConnection]
@@ -159,11 +157,12 @@ def socker(ws):
         update_websocket_to_False(actualUsername)
         dict = username_collection_dict[actualUsername]
         dict["websocketActive"] = False
-
+        # print("USER LEFT: ", actualUsername)
         print("these are the current users after a client leaves the user tab", username_websocket_connection_dict)
 
         # Signal all currently active users about the leave
         for username in username_websocket_connection_dict.keys():
+          print('SENDING TO ', username)
           connection = username_websocket_connection_dict[username]
           connection.send('inactive:'+str(get_user_from_username(actualUsername)['id']))
 
