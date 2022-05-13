@@ -132,6 +132,21 @@ def get_user_collection_via_auth_token(auth_token):
   userVerifiedFromDB = users_collection.find_one({"auth_token":hash_of_auth_token_cookie})
   return userVerifiedFromDB
 
+def update_notifcation_to_True(username):
+  users_collection = mongo_client.db["users_collection"]
+  print("/database in update notification to True this is the username" , username)
+  users_collection.find_one_and_update({"username":username}, {"$set": {"notifications": True}})
+
+def update_websocket_to_False(actualUsername):
+  users_collection = mongo_client.db["users_collection"]
+  print("/database in update websocket to False this is the username" , actualUsername)
+  users_collection.find_one_and_update({"username":actualUsername}, {"$set": {"websocketActive": False}}) 
+
+def update_wehsocket_to_True(actualUsername):
+  users_collection = mongo_client.db["users_collection"]
+  print("/database in update websocket to True this is the username" , actualUsername)
+  users_collection.find_one_and_update({"username":actualUsername}, {"$set": {"websocketActive": True}}) 
+
 def update_auth_token_to_None(username):
   users_collection = mongo_client.db["users_collection"]
   users_collection.find_one_and_update({"username":username["username"]}, {"$set": {"auth_token": None}} )
