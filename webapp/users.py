@@ -1,6 +1,6 @@
 import json
 from flask import Blueprint, render_template,request, flash, session, blueprints
-from webapp.database import get_all_users, fetch_messages, get_user_collection_via_auth_token, get_user_from_id, add_message
+from webapp.database import get_all_users, fetch_messages, get_user_collection_via_auth_token, get_user_from_id, add_message, set_user_notif
 import time 
 import json
 usersGiver = Blueprint("users", __name__)
@@ -80,6 +80,7 @@ def fetchMessages():
         messages = fetch_messages(session['id'], idToMessage)
         dataToSend = {'id':session['id'], 'idToMessage': idToMessage, 'messages': messages}
         messageTracking[session['id']] = idToMessage
+        set_user_notif(session['id'], False)
         print(dataToSend)
         print('abcd')
         return json.dumps(dataToSend)

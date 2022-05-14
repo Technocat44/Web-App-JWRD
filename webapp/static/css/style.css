@@ -261,6 +261,12 @@ input[type="email"] {
   filter: invert(36%) sepia(62%) saturate(2157%) hue-rotate(222deg) brightness(95%) contrast(99%);
 }
 
+.userCard_buttons_svg_notif {
+  width: 30px;
+  height: 30px;
+  filter: invert(89%) sepia(96%) saturate(3200%) hue-rotate(358deg) brightness(109%) contrast(111%);
+}
+
 .svg_div:hover {
   transform: scale(1.25);
   transition-duration: .2s;

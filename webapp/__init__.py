@@ -85,7 +85,8 @@ def socker(ws):
           dict = username_collection_dict[usernameKey]
           dict["notifications"] = True
           if connectionToSend != -1:
-            connectionToSend.send('fetch_messages')
+            connectionToSend.send('fetch_messages:'+str(get_user_from_username(actualUsername)['id']))
+            connectionToSend.send('notif:'+str(get_user_from_username(actualUsername)['id']))
       
 
 

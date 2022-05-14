@@ -5,7 +5,7 @@ console.log('this is establishing a websocket', socket)
 window.onbeforeunload = function () {
    alert('[leaving page]')
    socket.send(JSON.stringify('closing'))
-   console.log('SENDING CLOSING')
+   // console.log('SENDING CLOSING')
 }
 // the socket event
 socket.onopen = function () {
@@ -164,7 +164,7 @@ function get_chat_history() {
          console.log('received back: ', response)
          if (response.id == -1) {
             alert('Please Log In or Sign Up first!')
-         } else {
+         } else if (response.idToMessage != -1) {
             openMessages(response.messages)
          }
       }
@@ -180,25 +180,32 @@ function get_chat_history() {
 }
 
 function openMessages(messages) {
-   var x = document.getElementById('messageWindow')
-   x.style.display = 'flex'
-   removeAllChildNodes(document.getElementById('messageWindow_messages_list'))
-   const messageInstance = document.getElementById('messageInstance')
-   messageInstance.style.display = 'none'
-   console.log('messages are: ', messages)
-   for (message of messages) {
-      const clone = messageInstance.cloneNode(true)
-      clone.style.display = 'block'
-      clone.id = 'messageInstanceClone'
-      clone.appendChild(
-         document.createTextNode(message['user'] + ': ' + message['message'])
-      )
-      document.getElementById('messageWindow_messages_list').appendChild(clone)
+   if (messages){
+      var x = document.getElementById('messageWindow')
+      x.style.display = 'flex'
+      removeAllChildNodes(document.getElementById('messageWindow_messages_list'))
+      const messageInstance = document.getElementById('messageInstance')
+      messageInstance.style.display = 'none'
+      console.log('messages are: ', messages)
+      for (message of messages) {
+         const clone = messageInstance.cloneNode(true)
+         clone.style.display = 'block'
+         clone.id = 'messageInstanceClone'
+         clone.appendChild(
+            document.createTextNode(message['user'] + ': ' + message['message'])
+         )
+         document.getElementById('messageWindow_messages_list').appendChild(clone)
+      }
    }
 }
 
 function handleOpen(e) {
    idToMessage = parseInt(e.parentElement.parentElement.id)
+   for (child of e.children){
+      if (child.className == "userCard_buttons_svg_notif") {
+         child.className = "userCard_buttons_svg"
+      }
+   }
    console.log(idToMessage)
    get_chat_history(idToMessage)
 }
@@ -211,8 +218,14 @@ function closeMessages() {
 socket.onmessage = function (e) {
    data = e.data
    console.log('SOCKET DATA RECEIVED: ', data)
-   if (data == 'fetch_messages') {
-      get_chat_history()
+   if (data.substring(0, 14) == 'fetch_messages') {
+      idOfActive = data.split(':')[1]
+      var messageWindow = document.getElementById('messageWindow')
+      console.log('idToMessage: ', idToMessage)
+      console.log('idOfActive: ', idOfActive)
+      if (messageWindow.style.display == 'flex' && idToMessage == idOfActive) {
+         get_chat_history()
+      }
    } else if (data.substring(0, 6) == 'active') {
       idOfActive = data.split(':')[1]
       userCard = document.getElementById(idOfActive)
@@ -246,6 +259,25 @@ socket.onmessage = function (e) {
                         if (omegaMini.className == 'onlineStatus_on') {
                            console.log(omegaMini.className)
                            omegaMini.className = 'onlineStatus_off'
+                        }
+                     }
+                  }
+               }
+            }
+         }
+      }
+   } else if (data.substring(0, 5) == 'notif') {
+      idOfActive = data.split(':')[1]
+      userCard = document.getElementById(idOfActive)
+      console.log('RECEIVED: notif id ', idOfActive)
+      if (userCard) {
+         for (child of userCard.children) {
+            if (child.className == 'userCard_buttons') {
+               for (miniChild of child.children) {
+                  if (miniChild.className == 'svg_div') {
+                     for (omegaMini of miniChild.children) {
+                        if (omegaMini.className == 'userCard_buttons_svg') {
+                           omegaMini.className = 'userCard_buttons_svg_notif'
                         }
                      }
                   }

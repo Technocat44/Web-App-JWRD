@@ -68,6 +68,10 @@ def get_user_from_username(username):
   userData = users_collection.find_one({'username':username})
   return userData
 
+def set_user_notif(id, notifBool):
+  users_collection = mongo_client.db["users_collection"]
+  users_collection.update_one({'id':id}, { "$set": { 'notifications': notifBool } })
+
 def set_user_login_to_true(username, bool):
   username = escape_html(username)
   users_collection = mongo_client.db["users_collection"]
