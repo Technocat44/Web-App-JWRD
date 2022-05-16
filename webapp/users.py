@@ -19,19 +19,18 @@ def usersHandler():
     users = get_all_users()
     toSend = []
     for user in users:
-        # print(user)
+        print(user)
         if user.get('login') == True:
             userSend = {}
             userSend['id'] = user['id']
             userSend['username'] = user['username']
-            if user.get('profilePic') != None:
-                userSend['profilePic'] = user['profilePic']
+            if user.get('profile_pic') != None:
+                userSend['profilePic'] = './static/images/' + user['profile_pic']
             else:
                 userSend['profilePic'] = defaultPicture
             userSend['description'] = user.get('description', '')
             toSend.append(userSend)
-    # print(1)
-    # print(toSend)
+            print(userSend['profilePic'],flush=True)
     return render_template("users.html", users = toSend)
 @usersGiver.route('/allUsers')
 def allUsers():
